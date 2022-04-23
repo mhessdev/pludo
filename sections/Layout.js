@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 export default function Layout({ children, pageMeta }) {
   const router = useRouter();
   const meta = {
-    title: "Pludoh",
-    description: "Pludoh is a game database CMS",
+    title: "Pludo",
+    description: "Pludo is a game database CMS",
     type: "website",
     ...pageMeta,
   };
@@ -25,7 +25,7 @@ export default function Layout({ children, pageMeta }) {
           property="og:url"
           content={`http://localhost:3000${router.asPath}`}
         />
-        <meta property="site_name" content="Pludoh" />
+        <meta property="site_name" content="Pludo" />
       </Head>
       <div className="min-h-screen flex flex-col">
         <Header />
