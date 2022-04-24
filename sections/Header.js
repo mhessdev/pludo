@@ -1,15 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Logo from "../components/Logo";
-import Image from "next/image";
-import { MoonIcon, SunIcon, EmojiHappyIcon } from "@heroicons/react/outline";
+import {
+  MoonIcon,
+  SunIcon,
+  EmojiHappyIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "@heroicons/react/outline";
+import FlyoutMenu from "../components/FlyoutMenu";
+import MobileMenu from "../components/MobileMenu";
 
 export default function Header() {
   const { systemTheme, theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { data: session, status } = useSession();
   const loading = status === "loading";
+  const [menuOpen, setMenuOpen] = useState(false);
+  const containerRef = useRef();
 
   useEffect(() => {
     setMounted(true);
@@ -43,7 +52,7 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
         <Logo />
 
-        <div className="flex items-center space-x-3 divide-x-2 divide-slate-700">
+        <div className="flex items-center space-x-3">
           {renderThemeChanger()}
           {!loading ? (
             <div>
@@ -59,25 +68,46 @@ export default function Header() {
                   Log In
                 </button>
               ) : (
-                <div className="ml-3 flex items-center space-x-1 sm:space-x-2">
-                  {session.user.image ? (
-                    <img
-                      className="w-8 h-8 rounded-full relative"
-                      src={session.user.image}
-                      alt={session.user.name}
+                <div className="relative" ref={containerRef}>
+                  <button
+                    onClick={() => setMenuOpen((prev) => !prev)}
+                    className="ml-3 flex items-center space-x-1 sm:space-x-2"
+                  >
+                    {session.user.image ? (
+                      <img
+                        className="w-8 h-8 rounded-full relative"
+                        src={session.user.image}
+                        alt={session.user.name}
+                      />
+                    ) : (
+                      <EmojiHappyIcon />
+                    )}
+                    <p className="flex items-center sm:space-x-1">
+                      <span className="hidden sm:inline-block">
+                        Hello, {session.user.name?.split(" ")?.[0] ?? "there"}
+                      </span>
+                      {menuOpen ? (
+                        <ChevronUpIcon className="w-4 h-4 flex-shrink-0 mt-1" />
+                      ) : (
+                        <ChevronDownIcon className="w-4 h-4 flex-shrink-0 mt-1" />
+                      )}
+                    </p>
+                  </button>
+                  <div className="hidden md:block">
+                    <FlyoutMenu
+                      show={menuOpen}
+                      onClose={() => setMenuOpen(false)}
+                      containerRef={containerRef}
                     />
-                  ) : (
-                    <EmojiHappyIcon />
-                  )}
-
-                  <span>
-                    Hello, {session.user.name?.split(" ")?.[0] ?? "there"}
-                  </span>
+                  </div>
                 </div>
               )}
             </div>
           ) : null}
         </div>
+      </div>
+      <div className="block md:hidden">
+        <MobileMenu show={menuOpen} onClose={() => setMenuOpen(false)} />
       </div>
     </header>
   );
