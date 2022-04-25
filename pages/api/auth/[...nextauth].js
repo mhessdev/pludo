@@ -3,6 +3,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { Client as FaunaClient } from "faunadb";
 import { FaunaAdapter } from "@next-auth/fauna-adapter";
 import EmailProvider from "next-auth/providers/email";
+import DiscordProvider from "next-auth/providers/discord";
+import TwitchProvider from "next-auth/providers/twitch";
 
 const client = new FaunaClient({
   secret: process.env.NEXT_PUBLIC_FAUNADB_SECRET,
@@ -10,13 +12,21 @@ const client = new FaunaClient({
 
 export default NextAuth({
   providers: [
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+    TwitchProvider({
+      clientId: process.env.TWITCH_CLIENT_ID,
+      clientSecret: process.env.TWITCH_CLIENT_SECRET,
+    }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
     }),
   ],
   session: {
