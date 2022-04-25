@@ -80,7 +80,7 @@ export default function Header() {
                         alt={session.user.name}
                       />
                     ) : (
-                      <EmojiHappyIcon className="w-6 h-6 flex-shrink-0" />
+                      <EmojiHappyIcon />
                     )}
                     <p className="flex items-center sm:space-x-1">
                       <span className="hidden sm:inline-block">

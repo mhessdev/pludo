@@ -34,11 +34,11 @@ export default function FlyoutMenu({
             dark:divide-gray-700
         "
       >
-        {/* {!links?.length > 0 ? (
+        {!links?.length > 0 ? (
           <div className="p-5 space-y-8">
             <Nav links={links} />
           </div>
-        ) : null} */}
+        ) : null}
         <div className="px-5 py-3">
           <Logout />
         </div>
