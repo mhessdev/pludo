@@ -6,8 +6,14 @@ import EmailProvider from "next-auth/providers/email";
 import DiscordProvider from "next-auth/providers/discord";
 import TwitchProvider from "next-auth/providers/twitch";
 
+// const client = new FaunaClient({
+//   secret: process.env.NEXT_PUBLIC_FAUNADB_SECRET,
+// });
+
 const client = new FaunaClient({
   secret: process.env.NEXT_PUBLIC_FAUNADB_SECRET,
+  domain: "db.fauna.com",
+  scheme: "https",
 });
 
 export default NextAuth({
