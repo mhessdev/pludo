@@ -30,11 +30,17 @@ export default function Home() {
             >
               Log In
             </button>
-          ) : (
-            <Link href="/items">
+          ) : session.user.role === "admin" ? (
+            <Link href="/admin/items">
               <a className="p-6 bg-blue-500 text-white rounded hover:drop-shadow-lg flex space-x-3 ">
                 <PencilIcon className="w-6 h-6 flex-shrink-0" />
                 <span>Edit Data</span>
+              </a>
+            </Link>
+          ) : (
+            <Link href="https://thecycledb.com">
+              <a className="p-6 bg-blue-500 text-white rounded hover:drop-shadow-lg flex space-x-3 ">
+                <span>You Dont Belong Here</span>
               </a>
             </Link>
           )}

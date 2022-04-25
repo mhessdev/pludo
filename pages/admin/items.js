@@ -1,6 +1,6 @@
-import Layout from "../sections/Layout";
-import Table from "../sections/Table";
-import faunaQueries from "../lib/fauna";
+import Layout from "../../sections/Layout";
+import Table from "../../sections/Table";
+import faunaQueries from "../../lib/fauna";
 
 export default function Items({ items }) {
   return (
