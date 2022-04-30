@@ -2,9 +2,12 @@ import TableTabs from "../components/TableTabs";
 import Pagination from "../components/Pagination";
 import Modal from "../components/Modal";
 import { useState } from "react";
+import Image from "next/image";
+import { gameImageCDN } from "../lib/constants";
+import Button from "../components/Button";
 
 export default function Table({ rows }) {
-  const [modalContent, setModalContent] = useState({});
+  const [modalContent, setModalContent] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
@@ -12,6 +15,23 @@ export default function Table({ rows }) {
 
   const jsonClick = (row) => {
     setModalContent(row);
+    handleShow();
+  };
+
+  const imageClick = (path, imageName) => {
+    let image = gameImageCDN + path + ".webp";
+    setModalContent(
+      <div className="aspect-w-16 aspect-h-9  relative mx-auto">
+        <Image
+          src={image}
+          alt={imageName}
+          layout="fill"
+          objectFit="contain"
+          sizes="50vw"
+        />
+      </div>
+    );
+
     handleShow();
   };
 
@@ -63,7 +83,16 @@ export default function Table({ rows }) {
                     {row.name}
                   </th>
                   <td className="px-6 py-4">{row.key}</td>
-                  <td className="px-6 py-4">{row.imageFile}</td>
+                  <td className="px-6 py-4">
+                    {(row.imageFile && (
+                      <span
+                        className="cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-xs px-2 py-1 rounded-full"
+                        onClick={() => imageClick(row.imagePath, row.imageFile)}
+                      >
+                        {row.imageFile}
+                      </span>
+                    )) || <Button text="Add Image" style="small" />}
+                  </td>
                   <td className="px-6 py-4">{row.id}</td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-center space-x-3">

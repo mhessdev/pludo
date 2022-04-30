@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useSession, signIn, signOut } from "next-auth/react";
+import Image from "next/image";
 import Logo from "../components/Logo";
 import {
   MoonIcon,
@@ -11,6 +12,7 @@ import {
 } from "@heroicons/react/outline";
 import FlyoutMenu from "../components/FlyoutMenu";
 import MobileMenu from "../components/MobileMenu";
+import Button from "../components/Button";
 
 export default function Header() {
   const { systemTheme, theme, setTheme } = useTheme();
@@ -53,20 +55,16 @@ export default function Header() {
         <Logo />
 
         <div className="flex items-center space-x-3">
+          {!loading && session ? (
+            <Button text="Image Gallery" style="medium" />
+          ) : (
+            ""
+          )}
           {renderThemeChanger()}
           {!loading ? (
             <div>
               {!session ? (
-                <button
-                  type="button"
-                  className="bg-blue-600 hover:bg-blue-700 text-white
-              px-6 py-2 rounded-md border-2 border-blue-600 hover:border-blue-700 
-              text-lg sm:text-xl focus:outline-none focus:ring-4
-              focus:ring-blue-600 focus:ring-opacity-50 whitespace-nowrap"
-                  onClick={() => signIn()}
-                >
-                  Log In
-                </button>
+                <Button onClick={signIn} text="Log In" style="large" />
               ) : (
                 <div className="relative" ref={containerRef}>
                   <button
@@ -74,11 +72,14 @@ export default function Header() {
                     className="ml-3 flex items-center space-x-1 sm:space-x-2"
                   >
                     {session.user.image ? (
-                      <img
-                        className="w-8 h-8 rounded-full relative"
-                        src={session.user.image}
-                        alt={session.user.name}
-                      />
+                      <span className="w-8 h-8 relative">
+                        <Image
+                          src={session.user.image}
+                          alt={session.user.name}
+                          layout="fill"
+                          className="rounded-full"
+                        />
+                      </span>
                     ) : (
                       <EmojiHappyIcon />
                     )}
