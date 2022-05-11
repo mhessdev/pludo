@@ -1,6 +1,6 @@
 import TableTabs from "@/components/TableTabs";
 import Pagination from "@/components/Pagination";
-import { useState } from "react";
+import CreateDocument from "@/components/forms/CreateDocument";
 import { useAppContext } from "@/components/context/AppWrapper";
 import Image from "next/image";
 import { IMAGE_CDN } from "@/lib/constants";
@@ -8,8 +8,8 @@ import Button from "@/components/Button";
 import { PencilAltIcon } from "@heroicons/react/outline";
 import MediaBrowser from "@/components/MediaBrowser";
 
-export default function Table({ tabs, rows, folderList }) {
-    const { modal } = useAppContext();
+export default function Table({ tabs, rows, folderList, collection }) {
+    const { modal, slideOut } = useAppContext();
     const jsonClick = (row) => {
         modal.setModalContent(row);
         modal.handleShow();
@@ -51,12 +51,22 @@ export default function Table({ tabs, rows, folderList }) {
         modal.handleShow();
     };
 
+    const createDocument = () => {
+        slideOut.setSlideContent(<CreateDocument collection={collection} />);
+        slideOut.handleSlideShow();
+    };
+
     return (
         <>
             <section className="mt-6">
                 <div className="flex items-center justify-between">
                     <TableTabs tabs={tabs} />
-                    <Pagination />
+                    {/* <Pagination /> */}
+                    <Button
+                        onClick={() => createDocument()}
+                        style="large"
+                        text={"Create Document"}
+                    />
                 </div>
 
                 <div className="relative overflow-x-auto shadow-md sm:rounded-b-lg">

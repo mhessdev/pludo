@@ -6,7 +6,8 @@ import CreateCollection from "@/components/forms/CreateCollection";
 
 export default function TableTabs({ tabs = [] }) {
     const router = useRouter();
-    const curPath = router.pathname;
+    const curPath = router.asPath.split("/");
+
     const { modal } = useAppContext();
 
     const addCollection = () => {
@@ -17,21 +18,21 @@ export default function TableTabs({ tabs = [] }) {
     return (
         <>
             <ul
-                className="flex w-9/12 overflow-x-scroll overscroll-contain pb-4 pr-6 text-center 
-            text-sm font-medium text-gray-500 scrollbar scrollbar-thumb-gray-600 scrollbar-track-gray-800 dark:text-gray-400"
+                className="flex h-fit w-9/12 overflow-x-scroll overscroll-contain pr-6 
+            text-center text-sm font-medium text-gray-500 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-800 dark:text-gray-400"
             >
                 {tabs.map((tab, idx) => (
                     <li className="mr-2" key={`${tab}_${idx}`}>
-                        <Link href="#" passHref>
+                        <Link href={`/admin/${tab}`} passHref>
                             <a
                                 className={`group 
-                        inline-flex w-fit rounded-t-lg bg-gray-100 
-                        p-4 hover:bg-gray-500 
-                        dark:bg-gray-800 dark:hover:bg-gray-700
+                                    inline-flex w-fit rounded-t-lg 
+                                    bg-gray-100 
+                                    p-4 pb-6 hover:bg-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700
                             ${
-                                curPath == "/admin" && idx == 0
+                                curPath.length == 2 && idx == 0
                                     ? "text-blue-700"
-                                    : curPath == "/" + tab
+                                    : curPath[2] == tab
                                     ? "text-blue-700"
                                     : ""
                             }
@@ -49,7 +50,7 @@ export default function TableTabs({ tabs = [] }) {
                     <a
                         className="group 
                         inline-flex w-fit whitespace-nowrap rounded-t-lg
-                         bg-gray-100 p-4 hover:bg-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+                         bg-gray-100 p-4 pb-6 hover:bg-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
                     >
                         <PlusIcon className="mr-2 h-5 w-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300" />
                         Add Collection

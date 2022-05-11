@@ -3,10 +3,16 @@ import Table from "@/sections/Table";
 import { getFolders } from "@/lib/spaces";
 import { getCollections, getDocumentsByCollection } from "@/lib/fauna";
 
-export default function Admin({ collections, documents, folderList }) {
+export default function Admin({
+    collection,
+    collections,
+    documents,
+    folderList,
+}) {
     return (
         <Layout>
             <Table
+                collection={collection}
                 tabs={collections}
                 rows={documents}
                 folderList={folderList}
@@ -31,6 +37,7 @@ export async function getServerSideProps() {
 
     return {
         props: {
+            collection: collections[0],
             collections: collections,
             documents: documents,
             folderList: folderList,

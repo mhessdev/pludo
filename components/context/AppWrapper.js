@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import Modal from "@/components/Modal";
 import Toast from "@/components/Toast";
+import SlideOut from "@/components/SlideOut";
 
 const AppContext = createContext();
 
@@ -12,6 +13,14 @@ export function AppWrapper({ children }) {
         setModalContent("");
     };
     const handleShow = () => setShowModal(true);
+
+    const [slideContent, setSlideContent] = useState("");
+    const [showSlide, setShowSlide] = useState(false);
+    const handleSlideClose = () => {
+        setShowSlide(false);
+        setSlideContent("");
+    };
+    const handleSlideShow = () => setShowSlide(true);
 
     const [toastShow, setToastShow] = useState(false);
     const [message, setMessage] = useState("");
@@ -33,6 +42,13 @@ export function AppWrapper({ children }) {
             setStatus: setStatus,
             setToastShow: setToastShow,
         },
+        slideOut: {
+            show: showSlide,
+            content: slideContent,
+            setSlideContent: setSlideContent,
+            handleSlideClose: handleSlideClose,
+            handleSlideShow: handleSlideShow,
+        },
     };
 
     return (
@@ -48,6 +64,11 @@ export function AppWrapper({ children }) {
                 status={status}
                 show={toastShow}
                 onClose={() => setToastShow(false)}
+            />
+            <SlideOut
+                show={showSlide}
+                content={slideContent}
+                onHide={handleSlideClose}
             />
         </AppContext.Provider>
     );
