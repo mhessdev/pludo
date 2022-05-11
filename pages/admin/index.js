@@ -1,7 +1,7 @@
-import Layout from "../sections/Layout";
-import Table from "../sections/Table";
-import { getFolders } from "../lib/spaces";
-import { getCollections, getDocumentsByCollection } from "../lib/fauna";
+import Layout from "@/sections/Layout";
+import Table from "@/sections/Table";
+import { getFolders } from "@/lib/spaces";
+import { getCollections, getDocumentsByCollection } from "@/lib/fauna";
 
 export default function Admin({ collections, documents, folderList }) {
     return (
@@ -15,7 +15,7 @@ export default function Admin({ collections, documents, folderList }) {
     );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
     const folderList = await getFolders(
         "images/",
         process.env.DO_SPACES_BUCKET

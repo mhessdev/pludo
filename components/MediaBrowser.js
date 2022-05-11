@@ -6,8 +6,8 @@ import {
     ArrowsExpandIcon,
     PhotographIcon,
 } from "@heroicons/react/outline";
-import { IMAGE_CDN } from "../lib/constants";
-import { useAppContext } from "./context/AppWrapper";
+import { IMAGE_CDN } from "@/lib/constants";
+import { useAppContext } from "@/components/context/AppWrapper";
 
 export default function MediaBrowser({
     folderList,
@@ -189,9 +189,9 @@ export default function MediaBrowser({
                                         type="button"
                                         className="mr-2 mb-2 flex rounded-lg border border-gray-300 
 								bg-white px-5 py-2.5 text-lg font-medium leading-6 
-								text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 
-								focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white 
-								dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+								text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-200 
+								hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white 
+								dark:focus:ring-gray-700 dark:hover:border-gray-600 dark:hover:bg-gray-700"
                                     >
                                         <FolderIcon className="mr-2 h-6 w-6" />
                                         {folder
@@ -351,7 +351,7 @@ export default function MediaBrowser({
                                 </div>
                                 <button
                                     type="button"
-                                    className="mb-2 w-full rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    className="mb-2 w-full rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-blue-300 hover:bg-blue-800 dark:bg-blue-600 dark:focus:ring-blue-800 dark:hover:bg-blue-700"
                                     onClick={() => uploadToServer()}
                                 >
                                     Upload To CDN

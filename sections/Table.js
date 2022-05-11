@@ -1,12 +1,12 @@
-import TableTabs from "../components/TableTabs";
-import Pagination from "../components/Pagination";
+import TableTabs from "@/components/TableTabs";
+import Pagination from "@/components/Pagination";
 import { useState } from "react";
-import { useAppContext } from "../components/context/AppWrapper";
+import { useAppContext } from "@/components/context/AppWrapper";
 import Image from "next/image";
-import { IMAGE_CDN } from "../lib/constants";
-import Button from "../components/Button";
+import { IMAGE_CDN } from "@/lib/constants";
+import Button from "@/components/Button";
 import { PencilAltIcon } from "@heroicons/react/outline";
-import MediaBrowser from "../components/MediaBrowser";
+import MediaBrowser from "@/components/MediaBrowser";
 
 export default function Table({ tabs, rows, folderList }) {
     const { modal } = useAppContext();
@@ -171,7 +171,7 @@ export default function Table({ tabs, rows, folderList }) {
                                     <td className="px-6 py-4 text-right">
                                         <button
                                             type="button"
-                                            className="mr-2 mb-2 rounded-lg bg-gray-800 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+                                            className="mr-2 mb-2 rounded-lg bg-gray-800 px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-gray-300 hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-600 dark:focus:ring-gray-700 dark:hover:bg-gray-700"
                                             onClick={() => jsonClick(row)}
                                         >
                                             JSON
@@ -180,7 +180,7 @@ export default function Table({ tabs, rows, folderList }) {
                                     <td className="px-6 py-4 text-right">
                                         <button
                                             type="button"
-                                            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-blue-300 hover:bg-blue-800 dark:bg-blue-600 dark:focus:ring-blue-800 dark:hover:bg-blue-700"
                                         >
                                             Edit
                                         </button>
