@@ -1,7 +1,7 @@
 import Layout from "../sections/Layout";
 import Table from "../sections/Table";
-import faunaQueries from "../lib/fauna";
 import { getFolders } from "../lib/spaces";
+import faunaQueries from "../lib/fauna-old";
 
 export default function Items({ items, folderList }) {
 	return (

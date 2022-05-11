@@ -1,25 +1,24 @@
 export default function Modal({ show, onHide, content }) {
-	return (
-		<div
-			id="defaultModal"
-			tabIndex="-1"
-			aria-hidden="true"
-			className={`fixed top-0 right-0 left-0 z-10 flex 
+    return (
+        <div
+            id="defaultModal"
+            tabIndex="-1"
+            className={`fixed top-0 right-0 left-0 z-10 flex 
       h-screen w-screen overflow-y-auto overflow-x-hidden ${
-			show ? "block" : " hidden"
-		}`}
-		>
-			<div
-				className="fixed top-0 right-0 left-0 z-20 h-screen w-screen bg-gray-900/50"
-				onClick={onHide}
-			></div>
+          show ? "block" : " hidden"
+      }`}
+        >
+            <div
+                className="fixed top-0 right-0 left-0 z-20 h-screen w-screen bg-gray-900/50"
+                onClick={onHide}
+            ></div>
 
-			<div className="relative mx-auto mt-24 h-2/3 w-2/3 p-4">
-				<div className="relative z-30 rounded-lg bg-white shadow dark:bg-gray-700">
-					{/* <textarea value={JSON.stringify(content)}></textarea> */}
-					{content}
-				</div>
-			</div>
-		</div>
-	);
+            <div className="h-max-2/3 w-max-2/3 relative mx-auto mt-24 h-fit w-fit p-4">
+                <div className="relative z-30 rounded-lg bg-white shadow dark:bg-gray-700">
+                    {/* <textarea value={JSON.stringify(content)}></textarea> */}
+                    {content}
+                </div>
+            </div>
+        </div>
+    );
 }
