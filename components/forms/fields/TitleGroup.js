@@ -3,18 +3,11 @@ import { useState } from "react";
 import slugify from "slugify";
 
 export default function TitleGroup({
-    value,
-    slug,
+    titleValue = "",
+    slugValue = "",
     classes,
     onChange = () => null,
 }) {
-    const [slugValue, setSlugValue] = useState(slug);
-
-    const handleChange = (e) => {
-        setSlugValue(slugify(e.target.value, { lower: true, strict: true }));
-        //onChange(e);
-    };
-
     return (
         <div className="">
             <InputText
@@ -23,11 +16,22 @@ export default function TitleGroup({
                 placeholder="Item Name, Article Title, Guide Topic"
                 required={true}
                 classes={classes}
-                value={value}
-                onChange={handleChange}
+                value={titleValue}
+                onChange={(e) =>
+                    onChange(
+                        e.target.value,
+                        slugify(e.target.value, { lower: true, strict: true })
+                    )
+                }
             />
             <div className="mt-3 text-gray-400/50">
                 <span>slug: {slugValue}</span>
+                <InputText
+                    name="slug"
+                    required={true}
+                    value={slugValue}
+                    hidden={true}
+                />
             </div>
         </div>
     );

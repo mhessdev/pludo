@@ -1,6 +1,12 @@
 import Link from "next/link";
 
-export default function Button({ onClick = () => {}, text, style, link = "" }) {
+export default function Button({
+    onClick = () => {},
+    text,
+    style,
+    link = "",
+    type = "button",
+}) {
     const styles = {
         large: `bg-blue-600 hover:bg-blue-700 
       text-white px-6 py-2 rounded-md border-2 border-blue-600 
@@ -26,7 +32,7 @@ export default function Button({ onClick = () => {}, text, style, link = "" }) {
             {link ? (
                 <Link href={link} passHref>
                     <button
-                        type="button"
+                        type={type}
                         className={styles[style]}
                         onClick={onClick}
                     >
@@ -34,11 +40,7 @@ export default function Button({ onClick = () => {}, text, style, link = "" }) {
                     </button>
                 </Link>
             ) : (
-                <button
-                    type="button"
-                    className={styles[style]}
-                    onClick={onClick}
-                >
+                <button type={type} className={styles[style]} onClick={onClick}>
                     {text}
                 </button>
             )}
