@@ -80,7 +80,7 @@ export default function AddField({
     };
 
     return (
-        <div>
+        <div className="">
             <h3 className="mb-3">Add Fields</h3>
             <div className="flex flex-row gap-6">
                 <div
@@ -89,12 +89,12 @@ export default function AddField({
                 >
                     <PencilIcon className="mr-2 h-6 w-6" /> Text Box
                 </div>
-                <div
+                {/* <div
                     className={buttonClasses}
                     onClick={() => addFormField("image")}
                 >
                     <PhotographIcon className="mr-2 h-6 w-6" /> Image
-                </div>
+                </div> */}
                 <div
                     className={buttonClasses}
                     onClick={selectCollectionForTags}

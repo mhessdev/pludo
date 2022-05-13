@@ -52,7 +52,9 @@ export default function Table({ tabs, rows, folderList, collection }) {
     };
 
     const createDocument = () => {
-        slideOut.setSlideContent(<CreateDocument collection={collection} />);
+        slideOut.setSlideContent(
+            <CreateDocument collection={collection} folderList={folderList} />
+        );
         slideOut.handleSlideShow();
     };
 

@@ -1,20 +1,31 @@
 import { useState } from "react";
+import { useAppContext } from "@/components/context/AppWrapper";
 import Button from "@/components/Button";
 import InputText from "@/components/forms/fields/InputText";
 import TitleGroup from "@/components/forms/fields/TitleGroup";
 import FormHead from "@/components/forms/sections/FormHead";
-import { useAppContext } from "@/components/context/AppWrapper";
 import RichText from "@/components/forms/fields/RichText";
 import Tags from "@/components/forms/fields/Tags";
+import DocImages from "@/components/forms/fields/DocImages";
 
-export default function CreateDocument({ collection }) {
+export default function CreateDocument({ collection, folderList }) {
     const { toast } = useAppContext();
 
     const [formData, setFormData] = useState({
         title: "",
         slug: "",
-        fields: [],
+        fields: [
+            {
+                name: "content",
+                value: "",
+                type: "richtext",
+            },
+        ],
         tags: [],
+        images: {
+            featured: {},
+            gallery: [],
+        },
     });
 
     const [history, setHistory] = useState([formData]);
@@ -24,7 +35,6 @@ export default function CreateDocument({ collection }) {
     };
 
     const handleNewTags = (collection, options) => {
-        console.log(collection, "IN HANDLE NEW TAGS");
         setFormData((prevState) => ({
             ...prevState,
             tags: [
@@ -36,11 +46,10 @@ export default function CreateDocument({ collection }) {
                 },
             ],
         }));
+        setHistory([...history, formData]);
     };
 
     const selectTags = (collection, selectedTags) => {
-        console.log(collection, selectedTags, "IN SELECT TAGS");
-
         setFormData((prevState) => ({
             ...prevState,
             tags: prevState.tags.map((tag) => {
@@ -52,7 +61,7 @@ export default function CreateDocument({ collection }) {
             }),
         }));
 
-        console.log(formData, "IN SELECT TAGS FOR DATA");
+        setHistory([...history, formData]);
     };
 
     const handleNewField = (type) => {
@@ -115,6 +124,99 @@ export default function CreateDocument({ collection }) {
         setHistory([...history, formData]);
     };
 
+    const handleTagDelete = (collection) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            tags: prevState.tags.filter((tag) => tag.collection !== collection),
+        }));
+        setHistory([...history, formData]);
+    };
+
+    const handleImageSelect = (image) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            images: {
+                ...prevState.images,
+                gallery: [...prevState.images.gallery, { src: image }],
+            },
+        }));
+
+        setHistory([...history, formData]);
+    };
+
+    const handleImageAltChange = (index, newAlt) => {
+        if (index === "featured") {
+            setFormData((prevState) => ({
+                ...prevState,
+                images: {
+                    ...prevState.images,
+                    featured: {
+                        ...prevState.images.featured,
+                        alt: newAlt,
+                    },
+                },
+            }));
+            setHistory([...history, formData]);
+            return null;
+        }
+
+        setFormData((prevState) => ({
+            ...prevState,
+            images: {
+                ...prevState.images,
+                gallery: prevState.images.gallery.map((image, idx) =>
+                    idx === index ? { ...image, alt: newAlt } : image
+                ),
+            },
+        }));
+        setHistory([...history, formData]);
+    };
+
+    const handleImageDelete = (index) => {
+        if (index === "featured") {
+            setFormData((prevState) => ({
+                ...prevState,
+                images: {
+                    ...prevState.images,
+                    featured: prevState.images.gallery[0],
+                    gallery: prevState.images.gallery.slice(1),
+                },
+            }));
+            setHistory([...history, formData]);
+            return null;
+        }
+
+        setFormData((prevState) => ({
+            ...prevState,
+            images: {
+                ...prevState.images,
+                gallery: prevState.images.gallery.filter(
+                    (image, idx) => idx !== index
+                ),
+            },
+        }));
+
+        setHistory([...history, formData]);
+    };
+
+    const handleMakeFeatured = (index) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            images: {
+                ...prevState.images,
+                featured: prevState.images.gallery[index],
+                gallery: [
+                    ...prevState.images.gallery.filter(
+                        (image, idx) => idx !== index
+                    ),
+                    prevState.images.featured,
+                ],
+            },
+        }));
+
+        setHistory([...history, formData]);
+    };
+
     return (
         <>
             <FormHead
@@ -127,7 +229,7 @@ export default function CreateDocument({ collection }) {
                 reloadHistory={loadHistory}
             />
             <form
-                className="flex w-full flex-col gap-6 overflow-y-scroll scroll-smooth p-6"
+                className="flex w-full flex-col gap-6 p-6"
                 onSubmit={(e) => {
                     e.preventDefault();
                     console.log(formData);
@@ -180,7 +282,6 @@ export default function CreateDocument({ collection }) {
                             return null;
                     }
                 })}
-                {console.log(formData.tags)}
                 {formData.tags.map((tag, index) => {
                     console.log(tag);
                     return (
@@ -191,9 +292,19 @@ export default function CreateDocument({ collection }) {
                             curTags={tag.curTags}
                             options={tag.options}
                             onChange={selectTags}
+                            deletable={true}
+                            onDelete={handleTagDelete}
                         />
                     );
                 })}
+                <DocImages
+                    images={formData.images}
+                    folderList={folderList}
+                    onSelectImage={handleImageSelect}
+                    onAltChange={handleImageAltChange}
+                    onDelete={handleImageDelete}
+                    onMakeFeatured={handleMakeFeatured}
+                />
                 <Button text="Submit" style="full" type="submit" />
             </form>
         </>

@@ -76,3 +76,7 @@ export function AppWrapper({ children }) {
 export function useAppContext() {
     return useContext(AppContext);
 }
+
+export const useAppContextHook = () => {
+    return useContext(AppContext);
+};

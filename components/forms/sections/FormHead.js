@@ -53,7 +53,7 @@ export default function FormHead({
                 </span>
             </h2>
             <p className="text-sm text-gray-300">{description}</p>
-            <div className="flex flex-row justify-between">
+            <div className="sticky top-0 flex flex-row justify-between">
                 <AddField addFormField={addFormField} addTags={addTags} />
                 {history.length > 1 && (
                     <span

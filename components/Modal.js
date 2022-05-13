@@ -13,7 +13,7 @@ export default function Modal({ show, onHide, content }) {
                 onClick={onHide}
             ></div>
 
-            <div className="h-max-2/3 w-max-2/3 relative mx-auto mt-24 h-fit w-fit p-4">
+            <div className="h-max-2/3 w-max-2/3 relative mx-auto h-fit w-fit p-4">
                 <div className="relative z-50 rounded-lg bg-white shadow dark:bg-gray-700">
                     {/* <textarea value={JSON.stringify(content)}></textarea> */}
                     {content}

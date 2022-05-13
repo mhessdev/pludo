@@ -11,8 +11,8 @@ export default function SlideOut({ show, onHide, content }) {
             ></div>
             <div
                 className={`absolute top-0 right-0 z-30 flex h-full w-1/2 flex-col
-                    bg-slate-50 drop-shadow-2xl transition-all duration-500 ease-in-out 
-                    dark:bg-slate-800
+                    overflow-y-scroll bg-slate-50 drop-shadow-2xl transition-all duration-500 
+                    ease-in-out dark:bg-slate-800
                     ${show ? "-translate-x-0" : "translate-x-full"}
                 `}
             >
