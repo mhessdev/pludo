@@ -1,7 +1,6 @@
-import { createCollection } from "@/lib/fauna";
+import { createCollection } from "@/lib/fauna/collections";
 
 export default async function handler(req, res) {
-    console.log(req);
     try {
         const collection = await createCollection(
             req.body.name.replace(/[^A-Z0-9]/gi, "_")

@@ -1,4 +1,4 @@
-import { getDocumentsByCollection } from "@/lib/fauna";
+import { getDocumentsByCollection } from "@/lib/fauna/documents";
 
 export default async function handler(req, res) {
     try {

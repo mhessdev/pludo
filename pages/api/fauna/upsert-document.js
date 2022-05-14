@@ -1,4 +1,4 @@
-import { upsertDocument } from "@/lib/fauna";
+import { upsertDocument } from "@/lib/fauna/documents";
 
 export default async function handler(req, res) {
     try {

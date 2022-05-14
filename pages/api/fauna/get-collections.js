@@ -1,4 +1,4 @@
-import { getCollections } from "@/lib/fauna";
+import { getCollections } from "@/lib/fauna/collections";
 
 export default async function handler(req, res) {
     try {

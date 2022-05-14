@@ -1,4 +1,4 @@
-import { createDocument } from "@/lib/fauna";
+import { createDocument } from "@/lib/fauna/documents";
 
 export default async function handler(req, res) {
     const { collection, data } = req.body;

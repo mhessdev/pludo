@@ -1,4 +1,4 @@
-import { createDocuments } from "@/lib/fauna";
+import { createDocuments } from "@/lib/fauna/documents";
 
 export default async function handler(req, res) {
     try {

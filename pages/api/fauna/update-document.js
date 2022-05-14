@@ -1,4 +1,4 @@
-import { updateDocument } from "@/lib/fauna";
+import { updateDocument } from "@/lib/fauna/documents";
 
 export default async function handler(req, res) {
     try {

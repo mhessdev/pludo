@@ -1,4 +1,4 @@
-import { createIndex } from "@/lib/fauna";
+import { createIndex } from "@/lib/fauna/indexes";
 
 export default async function handler(req, res) {
     try {
