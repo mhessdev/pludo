@@ -7,9 +7,10 @@ import { IMAGE_CDN } from "@/lib/constants";
 import Button from "@/components/Button";
 import { PencilAltIcon } from "@heroicons/react/outline";
 import MediaBrowser from "@/components/MediaBrowser";
+import { checkCookies } from "cookies-next";
 
 export default function Table({ tabs, rows, folderList, collection }) {
-    const { modal, slideOut } = useAppContext();
+    const { modal, slideOut, toast } = useAppContext();
     const jsonClick = (row) => {
         modal.setModalContent(row);
         modal.handleShow();
@@ -56,6 +57,14 @@ export default function Table({ tabs, rows, folderList, collection }) {
             <CreateDocument collection={collection} folderList={folderList} />
         );
         slideOut.handleSlideShow();
+        if (checkCookies("create-doc")) {
+            toast.setMessage(
+                "Re-Loaded Previous Form Data, Submit Form or Clear Form to Start Over"
+            );
+            toast.setToastShow(true);
+            toast.setStatus(200);
+            toast.setSide("left");
+        }
     };
 
     return (

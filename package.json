@@ -16,6 +16,7 @@
         "@next-auth/fauna-adapter": "^1.0.3",
         "@squoosh/lib": "^0.4.0",
         "aws-sdk": "^2.1122.0",
+        "cookies-next": "^2.0.4",
         "faunadb": "^4.5.4",
         "formidable": "^3.2.3",
         "next": "12.1.5",

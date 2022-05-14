@@ -1,16 +1,16 @@
 import AddField from "@/components/forms/tools/AddField";
 import { useState } from "react";
-import { RewindIcon } from "@heroicons/react/outline";
+import { RewindIcon, TrashIcon } from "@heroicons/react/outline";
 import { useCallback, useEffect } from "react";
 
 export default function FormHead({
-    title,
-    highlight,
+    collection,
     description,
     history,
     addFormField = () => null,
     addTags = () => null,
     reloadHistory = () => null,
+    clearForm = () => null,
 }) {
     const [historyPosition, setHistoryPosition] = useState(0);
 
@@ -45,13 +45,19 @@ export default function FormHead({
     }, [handleKeyPress]);
 
     return (
-        <div className="mb-3 flex w-full flex-col gap-6 bg-cyan-900 p-6 text-gray-300 drop-shadow-md">
-            <h2>
-                {title}
-                <span className="ml-3 rounded bg-green-600 p-2 capitalize text-gray-100">
-                    {highlight}
+        <div className="mb-3 flex w-full flex-col gap-3 bg-cyan-900 py-3 px-6 text-gray-300 drop-shadow-md">
+            <div className="flex flex-row justify-between text-sm capitalize text-gray-100">
+                <span className="self-center rounded bg-green-600 px-2  ">
+                    Collection: {collection}
                 </span>
-            </h2>
+                <div
+                    className="inline-flex cursor-pointer flex-row self-center rounded bg-red-500 px-2 hover:bg-red-400"
+                    onClick={() => clearForm()}
+                >
+                    <TrashIcon className="mr-2 h-3 w-3 self-center" /> Clear
+                    Form
+                </div>
+            </div>
             <p className="text-sm text-gray-300">{description}</p>
             <div className="sticky top-0 flex flex-row justify-between">
                 <AddField addFormField={addFormField} addTags={addTags} />

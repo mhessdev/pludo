@@ -25,6 +25,7 @@ export function AppWrapper({ children }) {
     const [toastShow, setToastShow] = useState(false);
     const [message, setMessage] = useState("");
     const [status, setStatus] = useState("");
+    const [side, setSide] = useState("right");
 
     let sharedState = {
         modal: {
@@ -38,9 +39,11 @@ export function AppWrapper({ children }) {
             show: toastShow,
             message: message,
             status: status,
+            side: side,
             setMessage: setMessage,
             setStatus: setStatus,
             setToastShow: setToastShow,
+            setSide: setSide,
         },
         slideOut: {
             show: showSlide,

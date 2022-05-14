@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppContext } from "@/components/context/AppWrapper";
 import Button from "@/components/Button";
 import InputText from "@/components/forms/fields/InputText";
@@ -7,31 +7,63 @@ import FormHead from "@/components/forms/sections/FormHead";
 import RichText from "@/components/forms/fields/RichText";
 import Tags from "@/components/forms/fields/Tags";
 import DocImages from "@/components/forms/fields/DocImages";
+import {
+    getCookie,
+    setCookies,
+    removeCookies,
+    checkCookies,
+} from "cookies-next";
+import { BASE_FORM } from "@/lib/constants";
 
 export default function CreateDocument({ collection, folderList }) {
-    const { toast } = useAppContext();
+    const { toast, modal, slideOut } = useAppContext();
 
-    const [formData, setFormData] = useState({
-        title: "",
-        slug: "",
-        fields: [
-            {
-                name: "content",
-                value: "",
-                type: "richtext",
-            },
-        ],
-        tags: [],
-        images: {
-            featured: {},
-            gallery: [],
-        },
-    });
+    const [formData, setFormData] = useState(
+        checkCookies("create-doc")
+            ? JSON.parse(getCookie("create-doc"))
+            : BASE_FORM
+    );
 
     const [history, setHistory] = useState([formData]);
 
     const loadHistory = (history) => {
         setFormData(history);
+    };
+
+    useEffect(() => {
+        setCookies("create-doc", formData);
+        setHistory((prevState) => [...prevState, formData]);
+    }, [formData]);
+
+    const handleClear = () => {
+        modal.setModalContent(
+            <div className="flex flex-col items-center justify-center p-6">
+                <h1 className="text-center text-xl">
+                    Are you sure you want to clear the form?
+                </h1>
+                <div className="mt-4 flex flex-row justify-center gap-3">
+                    <span
+                        className="cursor-pointer rounded-md bg-sky-600 p-2 text-xl text-gray-100 hover:bg-sky-500"
+                        onClick={() => {
+                            modal.handleClose();
+                        }}
+                    >
+                        Cancel
+                    </span>
+                    <span
+                        className="cursor-pointer rounded-md bg-red-500 p-2 text-xl text-gray-100 hover:bg-red-400"
+                        onClick={() => {
+                            removeCookies("create-doc");
+                            setFormData(BASE_FORM);
+                            modal.handleClose();
+                        }}
+                    >
+                        Clear Form
+                    </span>
+                </div>
+            </div>
+        );
+        modal.handleShow();
     };
 
     const handleNewTags = (collection, options) => {
@@ -46,7 +78,6 @@ export default function CreateDocument({ collection, folderList }) {
                 },
             ],
         }));
-        setHistory([...history, formData]);
     };
 
     const selectTags = (collection, selectedTags) => {
@@ -60,8 +91,6 @@ export default function CreateDocument({ collection, folderList }) {
                 }
             }),
         }));
-
-        setHistory([...history, formData]);
     };
 
     const handleNewField = (type) => {
@@ -78,7 +107,6 @@ export default function CreateDocument({ collection, folderList }) {
                 },
             ],
         }));
-        setHistory([...history, formData]);
     };
 
     const handleTitleChange = (title, slug) => {
@@ -87,7 +115,6 @@ export default function CreateDocument({ collection, folderList }) {
             title: title,
             slug: slug,
         }));
-        setHistory([...history, formData]);
     };
 
     const handleFieldChange = (field, value) => {
@@ -97,7 +124,6 @@ export default function CreateDocument({ collection, folderList }) {
                 f.name === field ? { ...f, value: value } : f
             ),
         }));
-        setHistory([...history, formData]);
     };
 
     const handleFieldNameChange = (idx, name) => {
@@ -113,7 +139,6 @@ export default function CreateDocument({ collection, folderList }) {
                 idx === index ? { ...f, name: name } : f
             ),
         }));
-        setHistory([...history, formData]);
     };
 
     const handleFieldDelete = (idx) => {
@@ -121,7 +146,6 @@ export default function CreateDocument({ collection, folderList }) {
             ...prevState,
             fields: prevState.fields.filter((f, index) => index !== idx),
         }));
-        setHistory([...history, formData]);
     };
 
     const handleTagDelete = (collection) => {
@@ -129,7 +153,6 @@ export default function CreateDocument({ collection, folderList }) {
             ...prevState,
             tags: prevState.tags.filter((tag) => tag.collection !== collection),
         }));
-        setHistory([...history, formData]);
     };
 
     const handleImageSelect = (image) => {
@@ -141,7 +164,9 @@ export default function CreateDocument({ collection, folderList }) {
             },
         }));
 
-        setHistory([...history, formData]);
+        if (!formData.images.featured?.src) {
+            handleMakeFeatured(0);
+        }
     };
 
     const handleImageAltChange = (index, newAlt) => {
@@ -156,7 +181,7 @@ export default function CreateDocument({ collection, folderList }) {
                     },
                 },
             }));
-            setHistory([...history, formData]);
+
             return null;
         }
 
@@ -169,7 +194,6 @@ export default function CreateDocument({ collection, folderList }) {
                 ),
             },
         }));
-        setHistory([...history, formData]);
     };
 
     const handleImageDelete = (index) => {
@@ -182,7 +206,6 @@ export default function CreateDocument({ collection, folderList }) {
                     gallery: prevState.images.gallery.slice(1),
                 },
             }));
-            setHistory([...history, formData]);
             return null;
         }
 
@@ -195,8 +218,6 @@ export default function CreateDocument({ collection, folderList }) {
                 ),
             },
         }));
-
-        setHistory([...history, formData]);
     };
 
     const handleMakeFeatured = (index) => {
@@ -214,19 +235,61 @@ export default function CreateDocument({ collection, folderList }) {
             },
         }));
 
-        setHistory([...history, formData]);
+        setFormData((prevState) => ({
+            ...prevState,
+            images: {
+                ...prevState.images,
+                gallery: prevState.images.gallery.filter(
+                    (image, idx) => image?.src
+                ),
+            },
+        }));
+    };
+
+    const handleSubmit = async () => {
+        try {
+            console.log("uhhh here?");
+            const response = await fetch("/api/fauna/create-document", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    collection: collection,
+                    data: {
+                        title: formData.title,
+                        slug: formData.slug,
+                        fields: formData.fields,
+                        tags: formData.tags,
+                        images: formData.images,
+                    },
+                }),
+            });
+            const data = await response.json();
+            console.log(data);
+            toast.setMessage("Created document successfully");
+            toast.setStatus(200);
+            slideOut.handleSlideClose();
+            removeCookies("create-doc");
+            setFormData(BASE_FORM);
+        } catch (error) {
+            console.log(error);
+            toast.setMessage(error.message);
+            toast.setStatus(500);
+        }
+        toast.setToastShow(true);
     };
 
     return (
         <>
             <FormHead
-                title="Create Document"
-                highlight={collection}
+                collection={collection}
                 description="Create a new document in the collection, add the fields needed or generate from another document in the same collection"
                 addFormField={handleNewField}
                 addTags={handleNewTags}
                 history={history}
                 reloadHistory={loadHistory}
+                clearForm={handleClear}
             />
             <form
                 className="flex w-full flex-col gap-6 p-6"
@@ -305,7 +368,12 @@ export default function CreateDocument({ collection, folderList }) {
                     onDelete={handleImageDelete}
                     onMakeFeatured={handleMakeFeatured}
                 />
-                <Button text="Submit" style="full" type="submit" />
+                <div
+                    className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-md bg-green-500 p-6  text-gray-100  hover:bg-green-400 hover:drop-shadow-xl"
+                    onClick={() => handleSubmit()}
+                >
+                    <span className="text-3xl">SUBMIT</span>
+                </div>
             </form>
         </>
     );
