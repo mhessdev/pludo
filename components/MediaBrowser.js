@@ -76,7 +76,7 @@ export default function MediaBrowser({
             }
         }
         try {
-            const response = await fetch("/api/spaces/spaces/upload-file", {
+            const response = await fetch("/api/spaces/upload-file", {
                 method: "POST",
                 body,
             });
