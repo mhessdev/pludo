@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/outline";
 import { IMAGE_CDN } from "@/lib/constants";
 import { useAppContext } from "@/components/context/AppWrapper";
+import NProgress from "nprogress";
 
 export default function MediaBrowser({
     folderList,
@@ -73,6 +74,7 @@ export default function MediaBrowser({
     const uploadToServer = async () => {
         const body = new FormData();
         if (images && images.length > 0) {
+            NProgress.start();
             for (let i = 0; i < images.length; i++) {
                 let newFile = new File([images[i].file], images[i].name, {
                     type: images[i].file.type,
@@ -95,6 +97,7 @@ export default function MediaBrowser({
             toast.setMessage(error);
             toast.setStatus(data.status);
         }
+        NProgress.done();
     };
 
     const changeImageName = (e, index) => {
