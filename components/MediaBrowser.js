@@ -76,7 +76,7 @@ export default function MediaBrowser({
             }
         }
         try {
-            const response = await fetch("/api/upload-file", {
+            const response = await fetch("/api/spaces/spaces/upload-file", {
                 method: "POST",
                 body,
             });
@@ -106,7 +106,7 @@ export default function MediaBrowser({
 
     const getSubFolders = async (folder) => {
         try {
-            const response = await fetch("/api/list-folders", {
+            const response = await fetch("/api/spaces/list-folders", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export default function MediaBrowser({
                 setFolders(data);
             }
             try {
-                const response = await fetch("/api/list-files", {
+                const response = await fetch("/api/spaces/list-files", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

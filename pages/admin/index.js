@@ -1,7 +1,8 @@
 import Layout from "@/sections/Layout";
 import Table from "@/sections/Table";
 import { getFolders } from "@/lib/spaces";
-import { getCollections, getDocumentsByCollection } from "@/lib/fauna";
+import { getCollections } from "@/lib/fauna/collections";
+import { getRows } from "@/lib/fauna/functions";
 
 export default function Admin({
     collection,
@@ -32,14 +33,14 @@ export async function getServerSideProps({ req, res }) {
     let documents = [];
 
     if (collections.length > 0) {
-        documents = await getDocumentsByCollection(collections[0]);
+        documents = await getRows(collections[0]);
     }
 
     return {
         props: {
             collection: collections[0],
             collections: collections,
-            documents: documents,
+            documents: documents.data,
             folderList: folderList,
         },
     };

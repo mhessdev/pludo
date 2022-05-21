@@ -5,15 +5,81 @@ import { useAppContext } from "@/components/context/AppWrapper";
 import Image from "next/image";
 import { IMAGE_CDN } from "@/lib/constants";
 import Button from "@/components/Button";
-import { PencilAltIcon } from "@heroicons/react/outline";
 import MediaBrowser from "@/components/MediaBrowser";
 import { checkCookies } from "cookies-next";
+import { Switch, JsonInput } from "@mantine/core";
 
 export default function Table({ tabs, rows, folderList, collection }) {
     const { modal, slideOut, toast } = useAppContext();
-    const jsonClick = (row) => {
-        modal.setModalContent(row);
-        modal.handleShow();
+
+    const getDocData = async (id) => {
+        const response = await fetch("/api/fauna/get-document-by-id", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                collection: collection,
+                id: id,
+            }),
+        });
+
+        const data = await response.json();
+
+        return data;
+    };
+
+    const jsonClick = async (id) => {
+        try {
+            const response = await fetch("/api/fauna/get-document-by-id", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    collection: collection,
+                    id: "8089068970809-80-",
+                }),
+            });
+
+            const data = await response.json();
+
+            modal.setModalContent(
+                <div className="grid h-fit w-[600px] gap-3 p-6">
+                    <p className="w-full rounded-xl bg-red-400/50 p-2 text-center text-sm text-gray-100">
+                        Please Only Submit Changes If You Know What Youre Doing
+                    </p>
+                    <p className="text-sm">
+                        click in box then{" "}
+                        <span className="rounded-md bg-green-600 p-1">
+                            here
+                        </span>{" "}
+                        to format json
+                    </p>
+                    <JsonInput
+                        defaultValue={JSON.stringify(data.data)}
+                        label="Document Object"
+                        radius="md"
+                        validationError="Invalid json"
+                        formatOnBlur
+                        autosize
+                        minRows={8}
+                        classNames={{
+                            label: "text-gray-900 dark:text-gray-100",
+                        }}
+                    />
+                    <div className="w-full cursor-pointer rounded-md bg-green-500 p-6 text-center text-xl hover:bg-green-500 hover:drop-shadow-xl">
+                        UPDATE DOCUMENT
+                    </div>
+                </div>
+            );
+            modal.handleShow();
+        } catch (err) {
+            console.error(err);
+            toast.setMessage("Error Retrieving Document");
+            toast.setToastShow(true);
+            toast.setStatus(500);
+        }
     };
 
     const imageClick = (path, imageName) => {
@@ -85,19 +151,19 @@ export default function Table({ tabs, rows, folderList, collection }) {
                         <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
-                                    Name
+                                    Title
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Key
+                                    Slug
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Image File
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    id
+                                    Featured Image
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Published
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Last Updated
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span className="sr-only">Json</span>
@@ -117,11 +183,12 @@ export default function Table({ tabs, rows, folderList, collection }) {
                                         scope="row"
                                         className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                     >
-                                        {row.name}
+                                        {row.title}
                                     </th>
-                                    <td className="px-6 py-4">{row.key}</td>
+                                    <td className="px-6 py-4">{row.slug}</td>
                                     <td className="px-6 py-4">
-                                        {(row.imageFile && (
+                                        {row.featured}
+                                        {/* {(row.imageFile && (
                                             <div className="flex h-fit flex-row justify-between">
                                                 <div
                                                     className="group cursor-pointer"
@@ -164,36 +231,32 @@ export default function Table({ tabs, rows, folderList, collection }) {
                                                 text="Add Image"
                                                 style="small"
                                             />
-                                        )}
+                                        )} */}
                                     </td>
-                                    <td className="px-6 py-4">{row.id}</td>
+
                                     <td className="px-6 py-4 text-right">
-                                        <div className="flex justify-center space-x-3">
-                                            <label className="group relative flex items-center justify-between p-2">
-                                                {row.published
-                                                    ? "Published"
-                                                    : "Unplublished"}
-                                                <input
-                                                    type="checkbox"
-                                                    className="peer absolute left-1/2 h-full w-full -translate-x-1/2 appearance-none rounded-md"
-                                                />
-                                                <span
-                                                    className="ml-4 flex h-4 w-12 flex-shrink-0 items-center 
-                        rounded-full bg-gray-300 p-1 duration-300 
-                        ease-in-out after:h-6 
-                        after:w-6 after:rounded-full after:bg-white 
-                        after:shadow-md after:duration-300 
-                        group-hover:after:translate-x-1 peer-checked:bg-green-400
-                         peer-checked:after:translate-x-6"
-                                                ></span>
-                                            </label>
-                                        </div>
+                                        <Switch
+                                            onLabel="Published"
+                                            offLabel="Draft"
+                                            checked={row.published}
+                                            size="xl"
+                                            onChange={() =>
+                                                console.log(
+                                                    "needs to do something"
+                                                )
+                                            }
+                                        />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {new Date(
+                                            row.updatedAt
+                                        ).toLocaleString()}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button
                                             type="button"
                                             className="mr-2 mb-2 rounded-lg bg-gray-800 px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-gray-300 hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-600 dark:focus:ring-gray-700 dark:hover:bg-gray-700"
-                                            onClick={() => jsonClick(row)}
+                                            onClick={() => jsonClick(row.id)}
                                         >
                                             JSON
                                         </button>

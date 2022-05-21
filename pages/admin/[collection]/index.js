@@ -1,7 +1,8 @@
 import Layout from "@/sections/Layout";
 import Table from "@/sections/Table";
 import { getFolders } from "@/lib/spaces";
-import { getCollections, getDocumentsByCollection } from "@/lib/fauna";
+import { getCollections } from "@/lib/fauna/collections";
+import { getDocumentsByCollection } from "@/lib/fauna/documents";
 
 export default function CollectionPage({
     collection,

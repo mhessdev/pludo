@@ -1,33 +1,14 @@
-import { createIndex } from "@/lib/fauna/indexes";
+import { createRowsIndex } from "@/lib/fauna/indexes";
 
 export default async function handler(req, res) {
     try {
-        const {
-            collection,
-            name,
-            terms,
-            values,
-            unique,
-            serialized,
-            permissions,
-            data,
-        } = req.body;
+        const dbFunction = await createRowsIndex("test_Test");
 
-        const index = await createIndex(
-            collection,
-            name,
-            terms,
-            values,
-            unique,
-            serialized,
-            permissions,
-            data
-        );
-        res.status(200).json(index);
+        res.status(200).json(dbFunction);
     } catch (err) {
         res.status(500).json({
-            message: "Error Creating Index",
-            error: err.message,
+            message: "Error Creating Function",
+            error: err,
         });
     }
 }
