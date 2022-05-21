@@ -1,8 +1,7 @@
 import AWS from "aws-sdk";
 import formidable from "formidable";
 import fs from "fs";
-import { ImagePool } from "@squoosh/lib";
-import { cpus } from "os";
+// import { ImagePool } from "@squoosh/lib";
 
 export const config = {
     api: {
@@ -34,7 +33,7 @@ export default async function handler(req, res) {
             const images = files.images;
             const promises = [];
             for (let i = 0; i < images.length; i++) {
-                const imagePool = new ImagePool(cpus().length);
+                //const imagePool = new ImagePool(cpus().length);
                 const file = images[i];
                 const fileName = file.originalFilename.replace(
                     /[^A-Z0-9]+/gi,
@@ -43,11 +42,11 @@ export default async function handler(req, res) {
                 const filePath = file.filepath;
                 try {
                     const fileBuffer = fs.readFileSync(filePath);
-                    const image = imagePool.ingestImage(fileBuffer);
-                    await image.encode({
-                        webp: {},
-                    });
-                    const { extension, binary } = await image.encodedWith.webp;
+                    //const image = imagePool.ingestImage(fileBuffer);
+                    // await image.encode({
+                    //     webp: {},
+                    // });
+                    //const { extension, binary } = await image.encodedWith.webp;
 
                     // const compressedImage = fs.writeFileSync(
                     //     `./public/output.${extension}`,
@@ -77,11 +76,11 @@ export default async function handler(req, res) {
                         Bucket:
                             process.env.DO_SPACES_BUCKET + "/images/uploads",
                         Key: fileName,
-                        Body: Buffer.from(binary),
-                        ContentType: "image/" + extension,
+                        Body: fileBuffer,
+                        ContentType: "image/" + file.extension,
                         ACL: "public-read",
                     };
-                    await imagePool.close();
+                    // await imagePool.close();
                     promises.push(s3Client.putObject(params).promise());
                 } catch (err) {
                     console.log(err);
