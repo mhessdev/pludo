@@ -25,11 +25,16 @@ export default function MediaBrowser({
     const [curFolder, setCurFolder] = useState("images/");
     const lazyRoot = useRef();
 
+    const myLoader = ({ src, width, quality }) => {
+        return `${IMAGE_CDN}${src}?w=${width}&q=${quality || 75}`;
+    };
+
     const imageClick = (path, imageName) => {
         modal.setModalContent(
             <>
                 <div className="aspect-w-16 aspect-h-9 relative mx-auto">
                     <Image
+                        loader={myLoader}
                         src={path}
                         alt={imageName}
                         layout="fill"
