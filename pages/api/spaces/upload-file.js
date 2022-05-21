@@ -49,23 +49,35 @@ export default async function handler(req, res) {
                     });
                     const { extension, binary } = await image.encodedWith.webp;
 
-                    const compressedImage = fs.writeFileSync(
-                        `./public/output.${extension}`,
-                        binary,
-                        (err, result) => {
-                            if (err) console.log("error", err);
-                        }
-                    );
+                    // const compressedImage = fs.writeFileSync(
+                    //     `./public/output.${extension}`,
+                    //     binary,
+                    //     (err, result) => {
+                    //         if (err) console.log("error", err);
+                    //     }
+                    // );
 
-                    const compressedFileBuffer = fs.readFileSync(
-                        `./public/output.${extension}`
-                    );
+                    // const compressedFileBuffer = fs.readFileSync(
+                    //     `./public/output.${extension}`
+                    // );
+
+                    // const presignedPost = await s3Client
+                    //     .createPresignedPost({
+                    //         Bucket: process.env.DO_SPACES_BUCKET,
+                    //         Key: `images/${fileName}`,
+                    //         Fields: {
+                    //             Bode: binary,
+                    //             ContentType: `image/${extension}`,
+                    //         },
+                    //         Expires: 60,
+                    //     })
+                    //     .promise();
 
                     const params = {
                         Bucket:
                             process.env.DO_SPACES_BUCKET + "/images/uploads",
                         Key: fileName,
-                        Body: compressedFileBuffer,
+                        Body: Buffer.from(binary),
                         ContentType: "image/" + extension,
                         ACL: "public-read",
                     };
