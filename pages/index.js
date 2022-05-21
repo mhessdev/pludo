@@ -31,7 +31,7 @@ export default function Home() {
                             Log In
                         </button>
                     ) : (
-                        <Link href="/items">
+                        <Link href="/admin">
                             <a className="flex space-x-3 rounded bg-blue-500 p-6 text-white hover:drop-shadow-lg ">
                                 <PencilIcon className="h-6 w-6 flex-shrink-0" />
                                 <span>Edit Data</span>
