@@ -23,7 +23,6 @@ export default function FormHead({
                 historyPosition === 0 ? history.length - 1 : historyPosition - 1
             ]
         );
-        console.log(historyPosition);
     }, [historyPosition, history, reloadHistory]);
 
     const handleKeyPress = useCallback(

@@ -248,7 +248,6 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleSubmit = async () => {
         try {
-            console.log("uhhh here?");
             const response = await fetch("/api/fauna/create-document", {
                 method: "POST",
                 headers: {
@@ -266,14 +265,12 @@ export default function CreateDocument({ collection, folderList }) {
                 }),
             });
             const data = await response.json();
-            console.log(data);
             toast.setMessage("Created document successfully");
             toast.setStatus(200);
             slideOut.handleSlideClose();
             removeCookies("create-doc");
             setFormData(BASE_FORM);
         } catch (error) {
-            console.log(error);
             toast.setMessage(error.message);
             toast.setStatus(500);
         }
@@ -346,7 +343,6 @@ export default function CreateDocument({ collection, folderList }) {
                     }
                 })}
                 {formData.tags.map((tag, index) => {
-                    console.log(tag);
                     return (
                         <Tags
                             key={index}

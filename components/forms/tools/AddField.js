@@ -34,7 +34,6 @@ export default function AddField({
             toast.setToastShow(true);
             toast.setMessage(error);
             toast.setStatus(data.status);
-            console.log(error);
         }
     };
 
@@ -75,7 +74,6 @@ export default function AddField({
             toast.setToastShow(true);
             toast.setMessage(error);
             toast.setStatus(data.status);
-            console.log(error);
         }
     };
 
