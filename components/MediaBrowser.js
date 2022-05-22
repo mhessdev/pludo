@@ -239,6 +239,7 @@ export default function MediaBrowser({
                                                     }
                                                 />
                                                 <Image
+                                                    loader={myLoader}
                                                     src={image.src}
                                                     alt={image.name}
                                                     layout="fill"
@@ -337,8 +338,9 @@ export default function MediaBrowser({
                                     className="group group aspect-w-16 aspect-h-9 relative cursor-pointer"
                                 >
                                     <Image
+                                        loader={myLoader}
                                         lazyRoot={lazyRoot}
-                                        src={IMAGE_CDN + file}
+                                        src={file}
                                         alt={file}
                                         layout="fill"
                                         objectFit="cover"
@@ -349,10 +351,7 @@ export default function MediaBrowser({
                                         {expandImage && (
                                             <ArrowsExpandIcon
                                                 onClick={() =>
-                                                    imageClick(
-                                                        IMAGE_CDN + file,
-                                                        file
-                                                    )
+                                                    imageClick(file, file)
                                                 }
                                                 className=" h-10 w-10 cursor-pointer text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                                             />
