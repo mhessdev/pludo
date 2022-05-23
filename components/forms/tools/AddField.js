@@ -16,7 +16,7 @@ export default function AddField({
     const handleClickOnCollection = async (collection) => {
         try {
             const response = await fetch(
-                "/api/fauna/get-documents-by-collection",
+                "/api/pludo/fauna/get-documents-by-collection",
                 {
                     method: "POST",
                     headers: {
@@ -39,7 +39,7 @@ export default function AddField({
 
     const selectCollectionForTags = async () => {
         try {
-            const response = await fetch("/api/fauna/get-collections", {
+            const response = await fetch("/api/pludo/fauna/get-collections", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

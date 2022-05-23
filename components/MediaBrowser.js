@@ -35,7 +35,7 @@ export default function MediaBrowser({
             <>
                 <div className="aspect-w-16 aspect-h-9 relative mx-auto">
                     <Image
-                        loader={myLoader}
+                        // loader={myLoader}
                         src={path}
                         alt={imageName}
                         layout="fill"
@@ -83,7 +83,7 @@ export default function MediaBrowser({
             }
         }
         try {
-            const response = await fetch("/api/spaces/upload-file", {
+            const response = await fetch("/api/pludo/spaces/upload-file", {
                 method: "POST",
                 body,
             });
@@ -114,7 +114,7 @@ export default function MediaBrowser({
 
     const getSubFolders = async (folder) => {
         try {
-            const response = await fetch("/api/spaces/list-folders", {
+            const response = await fetch("/api/pludo/spaces/list-folders", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -131,7 +131,7 @@ export default function MediaBrowser({
                 setFolders(data);
             }
             try {
-                const response = await fetch("/api/spaces/list-files", {
+                const response = await fetch("/api/pludo/spaces/list-files", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -239,7 +239,7 @@ export default function MediaBrowser({
                                                     }
                                                 />
                                                 <Image
-                                                    loader={myLoader}
+                                                    // loader={myLoader}
                                                     src={image.src}
                                                     alt={image.name}
                                                     layout="fill"
@@ -338,9 +338,9 @@ export default function MediaBrowser({
                                     className="group group aspect-w-16 aspect-h-9 relative cursor-pointer"
                                 >
                                     <Image
-                                        loader={myLoader}
+                                        // loader={myLoader}
                                         lazyRoot={lazyRoot}
-                                        src={file}
+                                        src={IMAGE_CDN + file}
                                         alt={file}
                                         layout="fill"
                                         objectFit="cover"
@@ -351,7 +351,10 @@ export default function MediaBrowser({
                                         {expandImage && (
                                             <ArrowsExpandIcon
                                                 onClick={() =>
-                                                    imageClick(file, file)
+                                                    imageClick(
+                                                        IMAGE_CDN + file,
+                                                        file
+                                                    )
                                                 }
                                                 className=" h-10 w-10 cursor-pointer text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                                             />

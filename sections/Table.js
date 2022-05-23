@@ -13,7 +13,7 @@ export default function Table({ tabs, rows, folderList, collection }) {
     const { modal, slideOut, toast } = useAppContext();
 
     const getDocData = async (id) => {
-        const response = await fetch("/api/fauna/get-document-by-id", {
+        const response = await fetch("/api/pludo/fauna/get-document-by-id", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -31,16 +31,19 @@ export default function Table({ tabs, rows, folderList, collection }) {
 
     const jsonClick = async (id) => {
         try {
-            const response = await fetch("/api/fauna/get-document-by-id", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    collection: collection,
-                    id: "8089068970809-80-",
-                }),
-            });
+            const response = await fetch(
+                "/api/pludo/fauna/get-document-by-id",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        collection: collection,
+                        id: "8089068970809-80-",
+                    }),
+                }
+            );
 
             const data = await response.json();
 

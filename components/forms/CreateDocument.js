@@ -248,7 +248,7 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleSubmit = async () => {
         try {
-            const response = await fetch("/api/fauna/create-document", {
+            const response = await fetch("/api/pludo/fauna/create-document", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

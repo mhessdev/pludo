@@ -10,11 +10,14 @@ export default function CreateCollection({}) {
         if (collectionName !== "") {
             try {
                 let body = JSON.stringify({ name: collectionName });
-                const response = await fetch("/api/fauna/create-collection", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body,
-                });
+                const response = await fetch(
+                    "/api/pludo/fauna/create-collection",
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body,
+                    }
+                );
                 const data = await response.json();
                 if (response.status === 200) {
                     toast.setMessage("Collection created successfully");
