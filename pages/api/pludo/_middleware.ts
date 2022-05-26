@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 import cors from "@/lib/pludo-api/cors";
 
 export function middleware(req: NextRequest) {
+    if (req.credentials === "same-origin") {
+        return NextResponse.next();
+    }
     if (process.env.PLUDO_CLIENT_SECRET === req.headers.get("X-API-KEY")) {
         return cors(req, NextResponse.next());
     } else {

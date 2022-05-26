@@ -1,8 +1,8 @@
-import { createRowsIndex } from "@/lib/fauna/indexes";
+import { createCreateOrReplaceDocumentsBySlugFunction } from "@/lib/fauna/functions";
 
 export default async function handler(req, res) {
     try {
-        const dbFunction = await createRowsIndex("test_Test");
+        const dbFunction = await createCreateOrReplaceDocumentsBySlugFunction();
 
         res.status(200).json(dbFunction);
     } catch (err) {

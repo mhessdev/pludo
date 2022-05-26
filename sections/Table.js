@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import MediaBrowser from "@/components/MediaBrowser";
 import { checkCookies } from "cookies-next";
 import { Switch, JsonInput } from "@mantine/core";
+import { PencilAltIcon } from "@heroicons/react/outline";
 
 export default function Table({ tabs, rows, folderList, collection }) {
     const { modal, slideOut, toast } = useAppContext();
@@ -86,7 +87,7 @@ export default function Table({ tabs, rows, folderList, collection }) {
     };
 
     const imageClick = (path, imageName) => {
-        let image = IMAGE_CDN + "images" + path + ".webp";
+        let image = IMAGE_CDN + path + ".png";
         modal.setModalContent(
             <>
                 <div className="aspect-w-16 aspect-h-9  relative mx-auto">
@@ -190,15 +191,14 @@ export default function Table({ tabs, rows, folderList, collection }) {
                                     </th>
                                     <td className="px-6 py-4">{row.slug}</td>
                                     <td className="px-6 py-4">
-                                        {row.featured}
-                                        {/* {(row.imageFile && (
+                                        {(row.featured && (
                                             <div className="flex h-fit flex-row justify-between">
                                                 <div
                                                     className="group cursor-pointer"
                                                     onClick={() =>
                                                         imageClick(
-                                                            row.imagePath,
-                                                            row.imageFile
+                                                            row.featured,
+                                                            row.title
                                                         )
                                                     }
                                                 >
@@ -209,17 +209,16 @@ export default function Table({ tabs, rows, folderList, collection }) {
                                                             sizes="50vw"
                                                             src={
                                                                 IMAGE_CDN +
-                                                                "images" +
-                                                                row.imagePath +
-                                                                ".webp"
+                                                                row.featured +
+                                                                ".png"
                                                             }
                                                             quality={50}
-                                                            alt={row.imageFile}
+                                                            alt={row.title}
                                                             className="group-hover:opacity-75"
                                                         />
                                                     </div>
-                                                    <div className=" w-fit cursor-pointer rounded-full bg-gray-100 px-2 py-1 text-xs group-hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600">
-                                                        {row.imageFile}
+                                                    <div className=" w-fit cursor-pointer  bg-gray-100 px-2 py-1 text-[.5em] group-hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600">
+                                                        {row.featured}
                                                     </div>
                                                 </div>
                                                 <PencilAltIcon
@@ -234,7 +233,7 @@ export default function Table({ tabs, rows, folderList, collection }) {
                                                 text="Add Image"
                                                 style="small"
                                             />
-                                        )} */}
+                                        )}
                                     </td>
 
                                     <td className="px-6 py-4 text-right">

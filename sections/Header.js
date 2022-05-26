@@ -63,7 +63,7 @@ export default function Header() {
                             <Button
                                 text="Image Gallery"
                                 style="medium"
-                                link="images"
+                                link="admin/images"
                             />
                         </>
                     ) : (

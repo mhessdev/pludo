@@ -2,7 +2,7 @@ import Layout from "@/sections/Layout";
 import Table from "@/sections/Table";
 import { getFolders } from "@/lib/spaces";
 import { getCollections } from "@/lib/fauna/collections";
-import { getDocumentsByCollection } from "@/lib/fauna/documents";
+import { getRows } from "@/lib/fauna/functions";
 
 export default function CollectionPage({
     collection,
@@ -30,13 +30,13 @@ export async function getServerSideProps({ params }) {
 
     const collections = await getCollections();
 
-    const documents = await getDocumentsByCollection(params.collection);
+    const documents = await getRows(params.collection);
 
     return {
         props: {
             collection: params.collection,
             collections: collections,
-            documents: documents,
+            documents: documents.data,
             folderList: folderList,
         },
     };
