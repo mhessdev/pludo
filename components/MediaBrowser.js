@@ -9,6 +9,7 @@ import {
 import { IMAGE_CDN } from "@/lib/constants";
 import { useAppContext } from "@/components/context/AppWrapper";
 import NProgress from "nprogress";
+import { pludoApi } from "../lib/pludo-api/fetch-api";
 
 export default function MediaBrowser({
     folderList,
@@ -83,11 +84,11 @@ export default function MediaBrowser({
             }
         }
         try {
-            const response = await fetch("/api/pludo/spaces/upload-file", {
-                method: "POST",
-                body,
-            });
-            const data = await response.json();
+            // const response = await fetch("/api/pludo/spaces/upload-file", {
+            //     method: "POST",
+            //     body,
+            // });
+            const data = await pludoApi("/spaces/upload-file", body);
             toast.setToastShow(true);
             toast.setMessage(data.message);
             toast.setStatus(response.status);
@@ -114,16 +115,18 @@ export default function MediaBrowser({
 
     const getSubFolders = async (folder) => {
         try {
-            const response = await fetch("/api/pludo/spaces/list-folders", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    prefix: folder,
-                }),
+            // const response = await fetch("/api/pludo/spaces/list-folders", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({
+            //         prefix: folder,
+            //     }),
+            // });
+            const data = await pludoApi("/spaces/list-folders", {
+                prefix: folder,
             });
-            const data = await response.json();
 
             if (data.length > 0) {
                 setCurFolder(folder);
@@ -131,16 +134,18 @@ export default function MediaBrowser({
                 setFolders(data);
             }
             try {
-                const response = await fetch("/api/pludo/spaces/list-files", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        prefix: folder,
-                    }),
+                // const response = await fetch("/api/pludo/spaces/list-files", {
+                //     method: "POST",
+                //     headers: {
+                //         "Content-Type": "application/json",
+                //     },
+                //     body: JSON.stringify({
+                //         prefix: folder,
+                //     }),
+                // });
+                const data = await pludoApi("/spaces/list-files", {
+                    prefix: folder,
                 });
-                const data = await response.json();
                 setFiles(data);
             } catch (error) {
                 console.log(error);
