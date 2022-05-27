@@ -24,7 +24,7 @@ export default function Admin({
 
 export async function getServerSideProps({ req, res }) {
     const folderList = await getFolders(
-        "images/",
+        "Images/",
         process.env.DO_SPACES_BUCKET
     );
 

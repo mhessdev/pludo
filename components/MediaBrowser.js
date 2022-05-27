@@ -23,7 +23,7 @@ export default function MediaBrowser({
     const [parentFolders, setParentFolders] = useState([
         { prefix: "images/", folderName: "images" },
     ]);
-    const [curFolder, setCurFolder] = useState("images/");
+    const [curFolder, setCurFolder] = useState("Images/");
     const lazyRoot = useRef();
 
     const myLoader = ({ src, width, quality }) => {
@@ -340,7 +340,9 @@ export default function MediaBrowser({
                                     <Image
                                         // loader={myLoader}
                                         lazyRoot={lazyRoot}
-                                        src={IMAGE_CDN + file}
+                                        src={
+                                            IMAGE_CDN.split("Images")[0] + file
+                                        }
                                         alt={file}
                                         layout="fill"
                                         objectFit="cover"
@@ -352,7 +354,9 @@ export default function MediaBrowser({
                                             <ArrowsExpandIcon
                                                 onClick={() =>
                                                     imageClick(
-                                                        IMAGE_CDN + file,
+                                                        IMAGE_CDN.split(
+                                                            "Images"
+                                                        )[0] + file,
                                                         file
                                                     )
                                                 }

@@ -12,7 +12,7 @@ export default function Test({ folderList }) {
 
 export async function getServerSideProps() {
     const folderList = await getFolders(
-        "images/",
+        "Images/",
         process.env.DO_SPACES_BUCKET
     );
 
