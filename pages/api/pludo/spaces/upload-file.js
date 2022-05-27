@@ -74,7 +74,7 @@ export default async function handler(req, res) {
 
                     const params = {
                         Bucket:
-                            process.env.DO_SPACES_BUCKET + "/images/uploads",
+                            process.env.DO_SPACES_BUCKET + "/Images/Uploads",
                         Key: fileName,
                         Body: fileBuffer,
                         ContentType: "image/" + file.extension,
