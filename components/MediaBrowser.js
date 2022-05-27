@@ -36,7 +36,7 @@ export default function MediaBrowser({
                 <div className="aspect-w-16 aspect-h-9 relative mx-auto">
                     <Image
                         // loader={myLoader}
-                        src={path}
+                        src={IMAGE_CDN.split("Images")[0] + path}
                         alt={imageName}
                         layout="fill"
                         objectFit="contain"
