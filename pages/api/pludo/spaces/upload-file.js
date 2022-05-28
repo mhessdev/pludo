@@ -37,11 +37,12 @@ export default async function handler(req, res) {
                 //const imagePool = new ImagePool(cpus().length);
 
                 const file = images[i];
-
+                // console.log(file.originalFilename);
                 const fileName = file.originalFilename
-                    .substr(0, file.originalFilename.lastIndexOf("."))
+                    .replace(/\.[^/.]+$/, "")
                     .replace(/[^A-Z0-9]+/gi, "_");
-                console.log(fileName);
+
+                // console.log("NEW FILE NAME ", fileName);
                 const filePath = file.filepath;
                 try {
                     const fileBuffer = fs.readFileSync(filePath);
