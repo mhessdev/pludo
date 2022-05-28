@@ -79,6 +79,7 @@ export default function DocImages({
     onDelete = () => null,
     onMakeFeatured = () => null,
 }) {
+    console.log(images);
     const { modal } = useAppContext();
     const openMediaBrowser = () => {
         modal.setModalContent(
@@ -94,7 +95,7 @@ export default function DocImages({
 
     return (
         <div className="flex flex-col gap-2">
-            {(images.gallery.length > 0 || images.featured?.src) && (
+            {images.featured.src && (
                 <div className="block w-fit text-sm font-medium capitalize text-gray-900 dark:text-gray-300">
                     Images
                 </div>
@@ -102,7 +103,7 @@ export default function DocImages({
             <div
                 className={`grid grid-cols-3 gap-6 rounded-md   p-3
                 ${
-                    images.gallery.length > 0 || images.featured?.src
+                    images.gallery?.length > 0 ?? images.featured?.src
                         ? "border-2 border-gray-300"
                         : ""
                 }
@@ -111,29 +112,30 @@ export default function DocImages({
                 {images.featured?.src && (
                     <div key={"featuredImage"}>
                         <FormImage
-                            src={images.featured?.src}
-                            alt={images.featured?.alt}
+                            src={images.featured?.src + ".png"}
+                            alt={images.featured?.fileName}
                         />
                         <FormImageTools
-                            alt={images.featured?.alt}
+                            alt={images.featured?.fileName}
                             index={"featured"}
                             onAltChange={onAltChange}
                             onDelete={onDelete}
                         />
                     </div>
                 )}
-                {images.gallery.map((image, index) => (
-                    <div className="" key={"galleryImage" + index}>
-                        <FormImage src={image?.src} alt={image?.alt} />
-                        <FormImageTools
-                            alt={image?.alt}
-                            index={index}
-                            onAltChange={onAltChange}
-                            onDelete={onDelete}
-                            onMakeFeatured={onMakeFeatured}
-                        />
-                    </div>
-                ))}
+                {images.gallery &&
+                    images.gallery?.map((image, index) => (
+                        <div className="" key={"galleryImage" + index}>
+                            <FormImage src={image?.src} alt={image?.alt} />
+                            <FormImageTools
+                                alt={image?.alt}
+                                index={index}
+                                onAltChange={onAltChange}
+                                onDelete={onDelete}
+                                onMakeFeatured={onMakeFeatured}
+                            />
+                        </div>
+                    ))}
             </div>
 
             <div

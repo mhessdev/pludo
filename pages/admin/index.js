@@ -36,12 +36,14 @@ export async function getServerSideProps({ req, res }) {
         documents = await getRows(collections[0]);
     }
 
+    documents.after.pop();
     return {
         props: {
             collection: collections[0],
             collections: collections,
             documents: documents.data,
             folderList: folderList,
+            after: documents.after,
         },
     };
 }

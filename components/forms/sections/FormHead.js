@@ -7,6 +7,7 @@ export default function FormHead({
     collection,
     description,
     history,
+    editForm = false,
     addFormField = () => null,
     addTags = () => null,
     reloadHistory = () => null,
@@ -49,13 +50,15 @@ export default function FormHead({
                 <span className="self-center rounded bg-green-600 px-2  ">
                     Collection: {collection}
                 </span>
-                <div
-                    className="inline-flex cursor-pointer flex-row self-center rounded bg-red-500 px-2 hover:bg-red-400"
-                    onClick={() => clearForm()}
-                >
-                    <TrashIcon className="mr-2 h-3 w-3 self-center" /> Clear
-                    Form
-                </div>
+                {!editForm && (
+                    <div
+                        className="inline-flex cursor-pointer flex-row self-center rounded bg-red-500 px-2 hover:bg-red-400"
+                        onClick={() => clearForm()}
+                    >
+                        <TrashIcon className="mr-2 h-3 w-3 self-center" /> Clear
+                        Form
+                    </div>
+                )}
             </div>
             <p className="text-sm text-gray-300">{description}</p>
             <div className="sticky top-0 flex flex-row justify-between">

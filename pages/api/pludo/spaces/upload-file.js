@@ -19,6 +19,7 @@ const s3Client = new AWS.S3({
 });
 
 export default async function handler(req, res) {
+    let paths = [];
     const promise = new Promise((resolve, reject) => {
         const form = formidable();
         form.parse(req, async (err, fields, files) => {
@@ -34,11 +35,13 @@ export default async function handler(req, res) {
             const promises = [];
             for (let i = 0; i < images.length; i++) {
                 //const imagePool = new ImagePool(cpus().length);
+
                 const file = images[i];
-                const fileName = file.originalFilename.replace(
-                    /[^A-Z0-9]+/gi,
-                    "_"
-                );
+
+                const fileName = file.originalFilename
+                    .substr(0, file.originalFilename.lastIndexOf("."))
+                    .replace(/[^A-Z0-9]+/gi, "_");
+                console.log(fileName);
                 const filePath = file.filepath;
                 try {
                     const fileBuffer = fs.readFileSync(filePath);
@@ -71,17 +74,18 @@ export default async function handler(req, res) {
                     //         Expires: 60,
                     //     })
                     //     .promise();
-
+                    // console.log(fileName, file.mimetype, fileBuffer);
                     const params = {
                         Bucket:
                             process.env.DO_SPACES_BUCKET + "/Images/Uploads",
                         Key: fileName,
                         Body: fileBuffer,
-                        ContentType: "image/" + file.extension,
+                        ContentType: file.mimetype,
                         ACL: "public-read",
                     };
                     // await imagePool.close();
                     promises.push(s3Client.putObject(params).promise());
+                    paths.push("/Uploads/" + fileName);
                 } catch (err) {
                     console.log(err);
                     res.status(500).json({
@@ -99,6 +103,7 @@ export default async function handler(req, res) {
     return promise.then(() => {
         res.status(200).json({
             message: "File(s) uploaded",
+            paths: paths,
         });
     });
 }

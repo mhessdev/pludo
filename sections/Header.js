@@ -58,12 +58,12 @@ export default function Header() {
                 <div className="flex items-center space-x-3">
                     {!loading && session ? (
                         <>
-                            <Button text="Data" style="medium" link="items" />
+                            <Button text="Data" style="medium" link="/admin" />
 
                             <Button
                                 text="Image Gallery"
                                 style="medium"
-                                link="admin/images"
+                                link="/admin/images"
                             />
                         </>
                     ) : (

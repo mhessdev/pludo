@@ -9,6 +9,7 @@ export default function CollectionPage({
     collections,
     documents,
     folderList,
+    after,
 }) {
     return (
         <Layout>
@@ -17,6 +18,7 @@ export default function CollectionPage({
                 tabs={collections}
                 rows={documents}
                 folderList={folderList}
+                after={after}
             />
         </Layout>
     );
@@ -24,7 +26,7 @@ export default function CollectionPage({
 
 export async function getServerSideProps({ params }) {
     const folderList = await getFolders(
-        "images/",
+        "Images/",
         process.env.DO_SPACES_BUCKET
     );
 
@@ -32,12 +34,14 @@ export async function getServerSideProps({ params }) {
 
     const documents = await getRows(params.collection);
 
+    documents.after.pop();
     return {
         props: {
             collection: params.collection,
             collections: collections,
             documents: documents.data,
             folderList: folderList,
+            after: documents.after,
         },
     };
 }

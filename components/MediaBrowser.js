@@ -92,6 +92,10 @@ export default function MediaBrowser({
             toast.setMessage(data.message);
             toast.setStatus(response.status);
             setImages([]);
+
+            if (forEdit) {
+                onSelectImage(data.paths[0]);
+            }
         } catch (error) {
             toast.setToastShow(true);
             toast.setMessage(error);

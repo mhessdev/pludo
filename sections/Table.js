@@ -1,6 +1,7 @@
 import TableTabs from "@/components/TableTabs";
 import Pagination from "@/components/Pagination";
 import CreateDocument from "@/components/forms/CreateDocument";
+import EditDocument from "@/components/forms/EditDocument";
 import { useAppContext } from "@/components/context/AppWrapper";
 import Image from "next/image";
 import { IMAGE_CDN } from "@/lib/constants";
@@ -9,28 +10,58 @@ import MediaBrowser from "@/components/MediaBrowser";
 import { checkCookies } from "cookies-next";
 import { Switch, JsonInput } from "@mantine/core";
 import { PencilAltIcon } from "@heroicons/react/outline";
+import { useState, useEffect } from "react";
+import NProgress from "nprogress";
 
-export default function Table({ tabs, rows, folderList, collection }) {
+export default function Table({
+    tabs,
+    rows,
+    folderList,
+    collection,
+    after = [],
+}) {
     const { modal, slideOut, toast } = useAppContext();
 
-    const getDocData = async (id) => {
-        const response = await fetch("/api/pludo/fauna/get-document-by-id", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                collection: collection,
-                id: id,
-            }),
-        });
+    const [docs, setDocs] = useState(rows);
 
-        const data = await response.json();
+    const [nextDoc, setNextDoc] = useState(after);
 
-        return data;
+    useEffect(() => {
+        setDocs(rows);
+    }, [rows]);
+
+    const loadMore = async () => {
+        try {
+            NProgress.start();
+            console.log(nextDoc);
+            const response = await fetch(
+                `/api/pludo/fauna/functions/get-rows`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        collection: collection,
+                        after: nextDoc,
+                    }),
+                }
+            );
+            console.log(response);
+            const data = await response.json();
+
+            setDocs([...docs, ...data.data]);
+            NProgress.done();
+        } catch (err) {
+            console.log(err);
+            toast.setMessage("Error Loading More Documents");
+            toast.setToastShow(true);
+            toast.setStatus(500);
+            NProgress.done();
+        }
     };
 
-    const jsonClick = async (id) => {
+    const getDocData = async (id) => {
         try {
             const response = await fetch(
                 "/api/pludo/fauna/get-document-by-id",
@@ -41,13 +72,40 @@ export default function Table({ tabs, rows, folderList, collection }) {
                     },
                     body: JSON.stringify({
                         collection: collection,
-                        id: "8089068970809-80-",
+                        id: id,
                     }),
                 }
             );
-
             const data = await response.json();
 
+            return data?.data;
+        } catch (error) {
+            console.error(err);
+            toast.setMessage("Error Retrieving Document");
+            toast.setToastShow(true);
+            toast.setStatus(500);
+            return {};
+        }
+    };
+
+    const editDocumentClick = async (id) => {
+        const data = await getDocData(id);
+        if (data) {
+            slideOut.setSlideContent(
+                <EditDocument
+                    collection={collection}
+                    folderList={folderList}
+                    docData={data}
+                    docId={id}
+                />
+            );
+            slideOut.handleSlideShow();
+        }
+    };
+
+    const jsonClick = async (id) => {
+        const data = await getDocData(id);
+        if (data) {
             modal.setModalContent(
                 <div className="grid h-fit w-[600px] gap-3 p-6">
                     <p className="w-full rounded-xl bg-red-400/50 p-2 text-center text-sm text-gray-100">
@@ -61,7 +119,7 @@ export default function Table({ tabs, rows, folderList, collection }) {
                         to format json
                     </p>
                     <JsonInput
-                        defaultValue={JSON.stringify(data.data)}
+                        defaultValue={JSON.stringify(data)}
                         label="Document Object"
                         radius="md"
                         validationError="Invalid json"
@@ -78,11 +136,6 @@ export default function Table({ tabs, rows, folderList, collection }) {
                 </div>
             );
             modal.handleShow();
-        } catch (err) {
-            console.error(err);
-            toast.setMessage("Error Retrieving Document");
-            toast.setToastShow(true);
-            toast.setStatus(500);
         }
     };
 
@@ -106,17 +159,59 @@ export default function Table({ tabs, rows, folderList, collection }) {
         modal.handleShow();
     };
 
-    const replaceImage = () => {
-        const replaceFunction = async (file) => {
-            // UPDATE FAUNA DOC WITH FILE
-            modal.handleClose();
+    const replaceImage = (id) => {
+        const selectImage = async (file) => {
+            //console.log(file.split("Images")[1].split(".png")[0]);
+            let newFile = file.replace("Images", "").replace(".png", "");
+            try {
+                const response = await fetch(
+                    `/api/pludo/fauna/update-document`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            collection: collection,
+                            id: id,
+                            data: {
+                                pludo: {
+                                    images: {
+                                        featured: {
+                                            src: newFile,
+                                        },
+                                    },
+                                },
+                            },
+                        }),
+                    }
+                );
+
+                const data = await response.json();
+                toast.setMessage("Image Updated");
+                setDocs((prevState) =>
+                    prevState.map((doc) => {
+                        if (doc.id === id) {
+                            doc.pludoFeatured = newFile;
+                        }
+                        return doc;
+                    })
+                );
+                modal.handleClose();
+            } catch (error) {
+                console.log(error);
+                toast.setMessage("Error Updating Document");
+                toast.setStatus(500);
+            }
+            toast.setSide("left");
+            toast.setToastShow(true);
         };
 
         modal.setModalContent(
             <MediaBrowser
                 folderList={folderList}
                 forEdit={true}
-                replaceFunction={replaceFunction}
+                onSelectImage={selectImage}
             />
         );
         modal.handleShow();
@@ -137,6 +232,49 @@ export default function Table({ tabs, rows, folderList, collection }) {
         }
     };
 
+    const handlePublish = async (id, bool) => {
+        try {
+            const response = await fetch("/api/pludo/fauna/update-document", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    collection: collection,
+                    id: id,
+                    data: {
+                        pludo: {
+                            published: bool,
+                        },
+                    },
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+            toast.setMessage(
+                `Document ${data.data.slug} ${
+                    bool ? "Published" : "Unpublished"
+                }`
+            );
+            toast.setStatus(200);
+
+            setDocs((prevState) => {
+                return prevState.map((doc) => {
+                    if (doc.id === id) {
+                        doc.published = bool;
+                    }
+                    return doc;
+                });
+            });
+        } catch (err) {
+            console.error(err);
+            toast.setMessage("Error Updating Document");
+            toast.setStatus(500);
+        }
+        toast.setToastShow(true);
+        toast.setSide("left");
+    };
     return (
         <>
             <section className="mt-6">
@@ -178,52 +316,56 @@ export default function Table({ tabs, rows, folderList, collection }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {rows?.map((row) => (
+                            {docs?.map((doc) => (
                                 <tr
-                                    key={row.id}
+                                    key={doc.id}
                                     className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
                                 >
                                     <th
                                         scope="row"
                                         className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                     >
-                                        {row.title}
+                                        {doc.title}
                                     </th>
-                                    <td className="px-6 py-4">{row.slug}</td>
+                                    <td className="px-6 py-4">{doc.slug}</td>
                                     <td className="px-6 py-4">
-                                        {(row.featured && (
+                                        {((doc.pludoFeatured ??
+                                            doc.gameFeatured) && (
                                             <div className="flex h-fit flex-row justify-between">
                                                 <div
                                                     className="group cursor-pointer"
                                                     onClick={() =>
                                                         imageClick(
-                                                            row.featured,
-                                                            row.title
+                                                            doc.pludoFeatured ??
+                                                                doc.gameFeatured,
+                                                            doc.title
                                                         )
                                                     }
                                                 >
-                                                    <div className="aspect-w-5 aspect-h-1 relative mb-2">
+                                                    <div className="relative mb-2 h-12 w-28">
                                                         <Image
                                                             layout="fill"
                                                             objectFit="contain"
                                                             sizes="50vw"
                                                             src={
                                                                 IMAGE_CDN +
-                                                                row.featured +
+                                                                (doc.pludoFeatured ??
+                                                                    doc.gameFeatured) +
                                                                 ".png"
                                                             }
                                                             quality={50}
-                                                            alt={row.title}
+                                                            alt={doc.title}
                                                             className="group-hover:opacity-75"
                                                         />
                                                     </div>
                                                     <div className=" w-fit cursor-pointer  bg-gray-100 px-2 py-1 text-[.5em] group-hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600">
-                                                        {row.featured}
+                                                        {doc.pludoFeatured ??
+                                                            doc.gameFeatured}
                                                     </div>
                                                 </div>
                                                 <PencilAltIcon
                                                     onClick={() =>
-                                                        replaceImage()
+                                                        replaceImage(doc.id)
                                                     }
                                                     className="ml-1 h-8 w-8 cursor-pointer place-self-end self-center hover:text-slate-600  dark:hover:text-gray-50"
                                                 />
@@ -240,31 +382,35 @@ export default function Table({ tabs, rows, folderList, collection }) {
                                         <Switch
                                             onLabel="Published"
                                             offLabel="Draft"
-                                            checked={row.published}
+                                            checked={doc.published}
                                             size="xl"
-                                            onChange={() =>
-                                                console.log(
-                                                    "needs to do something"
+                                            onChange={(e) =>
+                                                handlePublish(
+                                                    doc.id,
+                                                    e.currentTarget.checked
                                                 )
                                             }
                                         />
                                     </td>
                                     <td className="px-6 py-4">
                                         {new Date(
-                                            row.updatedAt
+                                            doc.updatedAt
                                         ).toLocaleString()}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button
                                             type="button"
                                             className="mr-2 mb-2 rounded-lg bg-gray-800 px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-gray-300 hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-600 dark:focus:ring-gray-700 dark:hover:bg-gray-700"
-                                            onClick={() => jsonClick(row.id)}
+                                            onClick={() => jsonClick(doc.id)}
                                         >
                                             JSON
                                         </button>
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button
+                                            onClick={() =>
+                                                editDocumentClick(doc.id)
+                                            }
                                             type="button"
                                             className="mr-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-blue-300 hover:bg-blue-800 dark:bg-blue-600 dark:focus:ring-blue-800 dark:hover:bg-blue-700"
                                         >
@@ -275,6 +421,12 @@ export default function Table({ tabs, rows, folderList, collection }) {
                             ))}
                         </tbody>
                     </table>
+                    <div
+                        onClick={() => loadMore()}
+                        className="w-full bg-sky-500 p-6"
+                    >
+                        Load More
+                    </div>
                 </div>
             </section>
         </>

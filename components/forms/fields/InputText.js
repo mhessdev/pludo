@@ -20,10 +20,11 @@ export default function InputText({
         bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 
         focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white
         dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500`;
-    const disabledCss = `mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg 
+    const disabledCss = `bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg 
         focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed 
         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400
         dark:focus:ring-blue-500 dark:focus:border-blue-500`;
+
     return (
         <div key={`${index}-${name}`}>
             <Label

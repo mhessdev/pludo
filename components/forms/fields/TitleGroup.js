@@ -7,6 +7,7 @@ export default function TitleGroup({
     slugValue = "",
     classes,
     onChange = () => null,
+    disabled = false,
 }) {
     return (
         <div className="">
@@ -17,6 +18,7 @@ export default function TitleGroup({
                 required={true}
                 classes={classes}
                 value={titleValue}
+                disabled={disabled}
                 onChange={(e) =>
                     onChange(
                         e.target.value,
@@ -31,6 +33,7 @@ export default function TitleGroup({
                     required={true}
                     value={slugValue}
                     hidden={true}
+                    disabled={disabled}
                 />
             </div>
         </div>

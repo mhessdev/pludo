@@ -1,13 +1,13 @@
-import { createCreateOrReplaceDocumentsBySlugFunction } from "@/lib/fauna/functions";
+import { buildFaunaFunctions } from "@/lib/build-scripts/new-build";
 
 export default async function handler(req, res) {
     try {
-        const dbFunction = await createCreateOrReplaceDocumentsBySlugFunction();
+        await buildFaunaFunctions();
 
-        res.status(200).json(dbFunction);
+        res.status(200);
     } catch (err) {
         res.status(500).json({
-            message: "Error Creating Function",
+            message: "Error Building Functions",
             error: err,
         });
     }

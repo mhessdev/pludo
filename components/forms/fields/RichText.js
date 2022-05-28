@@ -26,11 +26,15 @@ export default function RichText({
                 editName={editName}
                 onNameChange={onNameChange}
             />
-            <div className="flex flex-row gap-3">
+            <div className="flex h-96 flex-row gap-3">
                 <RichTextEditor
                     key={index}
                     value={value}
                     onChange={(e) => onChange(name, e)}
+                    classNames={{
+                        root: "min-h-full",
+                        toolBarInner: "min-h-full",
+                    }}
                 />
                 {deletable && <DeleteField onDelete={onDelete} index={index} />}
             </div>
