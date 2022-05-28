@@ -76,8 +76,8 @@ export default function EditDocument({
                     <span
                         className="cursor-pointer rounded-md bg-red-500 p-2 text-xl text-gray-100 hover:bg-red-400"
                         onClick={() => {
-                            removeCookies("create-doc");
-                            setFormData(BASE_FORM);
+                            removeCookies("edit-doc-" + docData.slug);
+                            setFormData(docData.pludo);
                             modal.handleClose();
                         }}
                     >
@@ -183,7 +183,10 @@ export default function EditDocument({
             ...prevState,
             images: {
                 ...prevState.images,
-                gallery: [...prevState.images.gallery, { src: image }],
+                gallery: [
+                    ...prevState.images.gallery,
+                    { src: image.replace("Images", "") },
+                ],
             },
         }));
 

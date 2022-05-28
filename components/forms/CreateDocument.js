@@ -68,7 +68,7 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleNewTags = (collection, options) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             tags: [
                 ...prevState.tags,
                 {
@@ -82,7 +82,7 @@ export default function CreateDocument({ collection, folderList }) {
 
     const selectTags = (collection, selectedTags) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             tags: prevState.tags.map((tag) => {
                 if (tag.collection === collection) {
                     return { ...tag, curTags: selectedTags };
@@ -95,7 +95,7 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleNewField = (type) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             fields: [
                 ...prevState.fields,
                 {
@@ -119,7 +119,7 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleFieldChange = (field, value) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             fields: prevState.fields.map((f) =>
                 f.name === field ? { ...f, value: value } : f
             ),
@@ -127,14 +127,14 @@ export default function CreateDocument({ collection, folderList }) {
     };
 
     const handleFieldNameChange = (idx, name) => {
-        if (formData.fields.filter((f) => f.name === name).length > 0) {
+        if (formData.pludo.fields.filter((f) => f.name === name).length > 0) {
             toast.setMessage("Field names must be unique");
             toast.setStatus(500);
             toast.setToastShow(true);
             return null;
         }
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             fields: prevState.fields.map((f, index) =>
                 idx === index ? { ...f, name: name } : f
             ),
@@ -143,21 +143,21 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleFieldDelete = (idx) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             fields: prevState.fields.filter((f, index) => index !== idx),
         }));
     };
 
     const handleTagDelete = (collection) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             tags: prevState.tags.filter((tag) => tag.collection !== collection),
         }));
     };
 
     const handleImageSelect = (image) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             images: {
                 ...prevState.images,
                 gallery: [...prevState.images.gallery, { src: image }],
@@ -172,7 +172,7 @@ export default function CreateDocument({ collection, folderList }) {
     const handleImageAltChange = (index, newAlt) => {
         if (index === "featured") {
             setFormData((prevState) => ({
-                ...prevState,
+                ...prevState.pludo,
                 images: {
                     ...prevState.images,
                     featured: {
@@ -186,7 +186,7 @@ export default function CreateDocument({ collection, folderList }) {
         }
 
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             images: {
                 ...prevState.images,
                 gallery: prevState.images.gallery.map((image, idx) =>
@@ -199,7 +199,7 @@ export default function CreateDocument({ collection, folderList }) {
     const handleImageDelete = (index) => {
         if (index === "featured") {
             setFormData((prevState) => ({
-                ...prevState,
+                ...prevState.pludo,
                 images: {
                     ...prevState.images,
                     featured: prevState.images.gallery[0],
@@ -210,7 +210,7 @@ export default function CreateDocument({ collection, folderList }) {
         }
 
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             images: {
                 ...prevState.images,
                 gallery: prevState.images.gallery.filter(
@@ -222,7 +222,7 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleMakeFeatured = (index) => {
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             images: {
                 ...prevState.images,
                 featured: prevState.images.gallery[index],
@@ -236,7 +236,7 @@ export default function CreateDocument({ collection, folderList }) {
         }));
 
         setFormData((prevState) => ({
-            ...prevState,
+            ...prevState.pludo,
             images: {
                 ...prevState.images,
                 gallery: prevState.images.gallery.filter(
@@ -258,9 +258,9 @@ export default function CreateDocument({ collection, folderList }) {
                     data: {
                         title: formData.title,
                         slug: formData.slug,
-                        fields: formData.fields,
-                        tags: formData.tags,
-                        images: formData.images,
+                        fields: formData.pludo.fields,
+                        tags: formData.pludo.tags,
+                        images: formData.pludo.images,
                     },
                 }),
             });
@@ -300,7 +300,7 @@ export default function CreateDocument({ collection, folderList }) {
                     slugValue={formData.slug}
                     onChange={handleTitleChange}
                 />
-                {formData.fields.map((field, index) => {
+                {formData.pludo.fields.map((field, index) => {
                     switch (field.type) {
                         case "text":
                             return (
@@ -342,7 +342,7 @@ export default function CreateDocument({ collection, folderList }) {
                             return null;
                     }
                 })}
-                {formData.tags.map((tag, index) => {
+                {formData.pludo.tags.map((tag, index) => {
                     return (
                         <Tags
                             key={index}
@@ -357,7 +357,7 @@ export default function CreateDocument({ collection, folderList }) {
                     );
                 })}
                 <DocImages
-                    images={formData.images}
+                    images={formData.pludo.images}
                     folderList={folderList}
                     onSelectImage={handleImageSelect}
                     onAltChange={handleImageAltChange}

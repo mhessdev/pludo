@@ -11,6 +11,7 @@ function FormImage({ src, alt }) {
                 relative cursor-pointer rounded-lg border-gray-200 bg-white shadow-md 
                 hover:bg-gray-100 dark:border-gray-700
                 dark:bg-gray-800 dark:hover:bg-gray-700"
+            imageSrc={src}
         >
             <Image
                 src={IMAGE_CDN + "/" + src}
