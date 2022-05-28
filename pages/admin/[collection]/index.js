@@ -34,14 +34,18 @@ export async function getServerSideProps({ params }) {
 
     const documents = await getRows(params.collection);
 
-    documents.after.pop();
+    if (documents?.after) {
+        documents.after.pop();
+    }
+
+    const after = documents?.after ?? [];
     return {
         props: {
             collection: params.collection,
             collections: collections,
             documents: documents.data,
             folderList: folderList,
-            after: documents.after,
+            after: after,
         },
     };
 }

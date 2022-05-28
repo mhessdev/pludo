@@ -28,12 +28,12 @@ export default function Table({
 
     useEffect(() => {
         setDocs(rows);
-    }, [rows]);
+        setNextDoc(after);
+    }, [rows, after]);
 
     const loadMore = async () => {
         try {
             NProgress.start();
-            console.log(nextDoc);
             const response = await fetch(
                 `/api/pludo/fauna/functions/get-rows`,
                 {
@@ -47,8 +47,14 @@ export default function Table({
                     }),
                 }
             );
-            console.log(response);
+
             const data = await response.json();
+            if (data?.after) {
+                data.after.pop();
+                setNextDoc(data.after);
+            } else {
+                setNextDoc([]);
+            }
 
             setDocs([...docs, ...data.data]);
             NProgress.done();
@@ -126,6 +132,7 @@ export default function Table({
                         formatOnBlur
                         autosize
                         minRows={8}
+                        maxRows={20}
                         classNames={{
                             label: "text-gray-900 dark:text-gray-100",
                         }}
@@ -374,6 +381,9 @@ export default function Table({
                                             <Button
                                                 text="Add Image"
                                                 style="small"
+                                                onClick={() =>
+                                                    replaceImage(doc.id)
+                                                }
                                             />
                                         )}
                                     </td>
@@ -421,13 +431,15 @@ export default function Table({
                             ))}
                         </tbody>
                     </table>
+                </div>
+                {after.length > 0 && (
                     <div
                         onClick={() => loadMore()}
-                        className="w-full bg-sky-500 p-6"
+                        className="mt-10 w-full cursor-pointer rounded-xl bg-sky-500 p-6 text-center hover:drop-shadow-lg"
                     >
                         Load More
                     </div>
-                </div>
+                )}
             </section>
         </>
     );

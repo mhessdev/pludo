@@ -9,6 +9,7 @@ export default function Admin({
     collections,
     documents,
     folderList,
+    after,
 }) {
     return (
         <Layout>
@@ -17,6 +18,7 @@ export default function Admin({
                 tabs={collections}
                 rows={documents}
                 folderList={folderList}
+                after={after}
             />
         </Layout>
     );
@@ -36,14 +38,19 @@ export async function getServerSideProps({ req, res }) {
         documents = await getRows(collections[0]);
     }
 
-    documents.after.pop();
+    if (documents?.after) {
+        documents.after.pop();
+    }
+
+    const after = documents?.after ?? [];
+
     return {
         props: {
             collection: collections[0],
             collections: collections,
             documents: documents.data,
             folderList: folderList,
-            after: documents.after,
+            after: after,
         },
     };
 }
