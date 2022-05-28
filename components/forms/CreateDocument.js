@@ -236,11 +236,14 @@ export default function CreateDocument({ collection, folderList }) {
     const handleImageDelete = (index) => {
         if (index === "featured") {
             setFormData((prevState) => ({
-                ...prevState.pludo,
-                images: {
-                    ...prevState.pludo.images,
-                    featured: prevState.pludo.images.gallery[0],
-                    gallery: prevState.pludo.images.gallery.slice(1),
+                ...prevState,
+                pludo: {
+                    ...prevState.pludo,
+                    images: {
+                        ...prevState.pludo.images,
+                        featured: prevState.pludo.images.gallery[0],
+                        gallery: prevState.pludo.images.gallery.slice(1),
+                    },
                 },
             }));
             return null;

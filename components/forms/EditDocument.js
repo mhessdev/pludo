@@ -385,7 +385,7 @@ export default function EditDocument({
                 })}
                 <DocImages
                     images={
-                        Object.keys(formData.images.featured).length > 0 ||
+                        formData.images?.featured?.src ||
                         formData.images.gallery.length > 0
                             ? formData.images
                             : docData.gameData?.images ?? {}
