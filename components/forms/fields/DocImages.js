@@ -113,7 +113,7 @@ export default function DocImages({
                 {images.featured?.src && (
                     <div key={"featuredImage"}>
                         <FormImage
-                            src={images.featured?.src + ".png"}
+                            src={images.featured?.src}
                             alt={images.featured?.fileName}
                         />
                         <FormImageTools

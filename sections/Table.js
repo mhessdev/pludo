@@ -147,7 +147,7 @@ export default function Table({
     };
 
     const imageClick = (path, imageName) => {
-        let image = IMAGE_CDN + path + ".png";
+        let image = IMAGE_CDN + path;
         modal.setModalContent(
             <>
                 <div className="aspect-w-16 aspect-h-9  relative mx-auto">
@@ -168,8 +168,6 @@ export default function Table({
 
     const replaceImage = (id) => {
         const selectImage = async (file) => {
-            //console.log(file.split("Images")[1].split(".png")[0]);
-            let newFile = file.replace("Images", "").replace(".png", "");
             try {
                 const response = await fetch(
                     `/api/pludo/fauna/update-document`,
@@ -185,7 +183,7 @@ export default function Table({
                                 pludo: {
                                     images: {
                                         featured: {
-                                            src: newFile,
+                                            src: file,
                                         },
                                     },
                                 },
@@ -199,7 +197,7 @@ export default function Table({
                 setDocs((prevState) =>
                     prevState.map((doc) => {
                         if (doc.id === id) {
-                            doc.pludoFeatured = newFile;
+                            doc.pludoFeatured = file;
                         }
                         return doc;
                     })
@@ -357,8 +355,7 @@ export default function Table({
                                                             src={
                                                                 IMAGE_CDN +
                                                                 (doc.pludoFeatured ??
-                                                                    doc.gameFeatured) +
-                                                                ".png"
+                                                                    doc.gameFeatured)
                                                             }
                                                             quality={50}
                                                             alt={doc.title}
