@@ -32,7 +32,7 @@ export default function RichText({
                     value={value}
                     onChange={(e) => onChange(name, e)}
                     classNames={{
-                        root: "min-h-full",
+                        root: "min-h-full overflow-y-auto",
                         toolBarInner: "min-h-full",
                     }}
                 />
