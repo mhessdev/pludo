@@ -28,7 +28,17 @@ export default function AddField({
                 }
             );
             const data = await response.json();
-            addTags(collection, data);
+            addTags(
+                collection,
+                data.map((option) => {
+                    return {
+                        id: option.id,
+                        data: {
+                            title: option.data.title,
+                        },
+                    };
+                })
+            );
             modal.handleClose();
         } catch (error) {
             toast.setToastShow(true);

@@ -96,7 +96,7 @@ export default function DocImages({
 
     return (
         <div className="flex flex-col gap-2">
-            {images.featured.src && (
+            {images.featured?.src && (
                 <div className="block w-fit text-sm font-medium capitalize text-gray-900 dark:text-gray-300">
                     Images
                 </div>
@@ -114,10 +114,16 @@ export default function DocImages({
                     <div key={"featuredImage"}>
                         <FormImage
                             src={images.featured?.src}
-                            alt={images.featured?.fileName}
+                            alt={
+                                images.featured?.alt ??
+                                images.featured?.fileName
+                            }
                         />
                         <FormImageTools
-                            alt={images.featured?.fileName}
+                            alt={
+                                images.featured?.alt ??
+                                images.featured?.fileName
+                            }
                             index={"featured"}
                             onAltChange={onAltChange}
                             onDelete={onDelete}
@@ -127,9 +133,12 @@ export default function DocImages({
                 {images.gallery &&
                     images.gallery?.map((image, index) => (
                         <div className="" key={"galleryImage" + index}>
-                            <FormImage src={image?.src} alt={image?.alt} />
+                            <FormImage
+                                src={image?.src}
+                                alt={image?.alt ?? image?.fileName}
+                            />
                             <FormImageTools
-                                alt={image?.alt}
+                                alt={image?.alt ?? image?.fileName}
                                 index={index}
                                 onAltChange={onAltChange}
                                 onDelete={onDelete}

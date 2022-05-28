@@ -389,7 +389,7 @@ export default function EditDocument({
                         Object.keys(formData.images.featured).length > 0 ||
                         formData.images.gallery.length > 0
                             ? formData.images
-                            : docData.gameData.images
+                            : docData.gameData?.images ?? {}
                     }
                     folderList={folderList}
                     onSelectImage={handleImageSelect}

@@ -24,6 +24,8 @@ export default function CreateDocument({ collection, folderList }) {
             : BASE_FORM
     );
 
+    console.log(formData);
+
     const [history, setHistory] = useState([formData]);
 
     const loadHistory = (history) => {
@@ -33,6 +35,7 @@ export default function CreateDocument({ collection, folderList }) {
     useEffect(() => {
         setCookies("create-doc", formData);
         setHistory((prevState) => [...prevState, formData]);
+        console.log("IN EFFECT HOOK ", formData);
     }, [formData]);
 
     const handleClear = () => {
@@ -68,44 +71,53 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleNewTags = (collection, options) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            tags: [
-                ...prevState.tags,
-                {
-                    collection: collection,
-                    curTags: [],
-                    options: options,
-                },
-            ],
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                tags: [
+                    ...prevState.pludo.tags,
+                    {
+                        collection: collection,
+                        curTags: [],
+                        options: options,
+                    },
+                ],
+            },
         }));
     };
 
     const selectTags = (collection, selectedTags) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            tags: prevState.tags.map((tag) => {
-                if (tag.collection === collection) {
-                    return { ...tag, curTags: selectedTags };
-                } else {
-                    return tag;
-                }
-            }),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                tags: prevState.pludo.tags.map((tag) => {
+                    if (tag.collection === collection) {
+                        return { ...tag, curTags: selectedTags };
+                    } else {
+                        return tag;
+                    }
+                }),
+            },
         }));
     };
 
     const handleNewField = (type) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            fields: [
-                ...prevState.fields,
-                {
-                    name:
-                        "FIELD_TEMP_" +
-                        (Math.random() + 1).toString(36).substring(7),
-                    value: "",
-                    type: type,
-                },
-            ],
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                fields: [
+                    ...prevState.pludo.fields,
+                    {
+                        name:
+                            "FIELD_TEMP_" +
+                            (Math.random() + 1).toString(36).substring(7),
+                        value: "",
+                        type: type,
+                    },
+                ],
+            },
         }));
     };
 
@@ -119,10 +131,13 @@ export default function CreateDocument({ collection, folderList }) {
 
     const handleFieldChange = (field, value) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            fields: prevState.fields.map((f) =>
-                f.name === field ? { ...f, value: value } : f
-            ),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                fields: prevState.pludo.fields.map((f) =>
+                    f.name === field ? { ...f, value: value } : f
+                ),
+            },
         }));
     };
 
@@ -134,37 +149,56 @@ export default function CreateDocument({ collection, folderList }) {
             return null;
         }
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            fields: prevState.fields.map((f, index) =>
-                idx === index ? { ...f, name: name } : f
-            ),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                fields: prevState.pludo.fields.map((f, index) =>
+                    idx === index ? { ...f, name: name } : f
+                ),
+            },
         }));
     };
 
     const handleFieldDelete = (idx) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            fields: prevState.fields.filter((f, index) => index !== idx),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                fields: prevState.pludo.fields.filter(
+                    (f, index) => index !== idx
+                ),
+            },
         }));
     };
 
     const handleTagDelete = (collection) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            tags: prevState.tags.filter((tag) => tag.collection !== collection),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                tags: prevState.pludo.tags.filter(
+                    (tag) => tag.collection !== collection
+                ),
+            },
         }));
     };
 
     const handleImageSelect = (image) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            images: {
-                ...prevState.images,
-                gallery: [...prevState.images.gallery, { src: image }],
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                images: {
+                    ...prevState.pludo.images,
+                    gallery: [
+                        ...prevState.pludo.images.gallery,
+                        { src: image.split("Images")[1] },
+                    ],
+                },
             },
         }));
 
-        if (!formData.images.featured?.src) {
+        if (!formData.pludo.images.featured?.src) {
             handleMakeFeatured(0);
         }
     };
@@ -172,12 +206,15 @@ export default function CreateDocument({ collection, folderList }) {
     const handleImageAltChange = (index, newAlt) => {
         if (index === "featured") {
             setFormData((prevState) => ({
-                ...prevState.pludo,
-                images: {
-                    ...prevState.images,
-                    featured: {
-                        ...prevState.images.featured,
-                        alt: newAlt,
+                ...prevState,
+                pludo: {
+                    ...prevState.pludo,
+                    images: {
+                        ...prevState.pludo.images,
+                        featured: {
+                            ...prevState.pludo.images.featured,
+                            alt: newAlt,
+                        },
                     },
                 },
             }));
@@ -186,12 +223,15 @@ export default function CreateDocument({ collection, folderList }) {
         }
 
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            images: {
-                ...prevState.images,
-                gallery: prevState.images.gallery.map((image, idx) =>
-                    idx === index ? { ...image, alt: newAlt } : image
-                ),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                images: {
+                    ...prevState.pludo.images,
+                    gallery: prevState.pludo.images.gallery.map((image, idx) =>
+                        idx === index ? { ...image, alt: newAlt } : image
+                    ),
+                },
             },
         }));
     };
@@ -201,52 +241,72 @@ export default function CreateDocument({ collection, folderList }) {
             setFormData((prevState) => ({
                 ...prevState.pludo,
                 images: {
-                    ...prevState.images,
-                    featured: prevState.images.gallery[0],
-                    gallery: prevState.images.gallery.slice(1),
+                    ...prevState.pludo.images,
+                    featured: prevState.pludo.images.gallery[0],
+                    gallery: prevState.pludo.images.gallery.slice(1),
                 },
             }));
             return null;
         }
 
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            images: {
-                ...prevState.images,
-                gallery: prevState.images.gallery.filter(
-                    (image, idx) => idx !== index
-                ),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                images: {
+                    ...prevState.pludo.images,
+                    gallery: prevState.pludo.images.gallery.filter(
+                        (image, idx) => idx !== index
+                    ),
+                },
             },
         }));
     };
 
     const handleMakeFeatured = (index) => {
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            images: {
-                ...prevState.images,
-                featured: prevState.images.gallery[index],
-                gallery: [
-                    ...prevState.images.gallery.filter(
-                        (image, idx) => idx !== index
-                    ),
-                    prevState.images.featured,
-                ],
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                images: {
+                    ...prevState.pludo.images,
+                    featured: prevState.pludo.images.gallery[index],
+                    gallery: [
+                        ...prevState.pludo.images.gallery.filter(
+                            (image, idx) => idx !== index
+                        ),
+                        prevState.pludo.images.featured,
+                    ],
+                },
             },
         }));
 
         setFormData((prevState) => ({
-            ...prevState.pludo,
-            images: {
-                ...prevState.images,
-                gallery: prevState.images.gallery.filter(
-                    (image, idx) => image?.src
-                ),
+            ...prevState,
+            pludo: {
+                ...prevState.pludo,
+                images: {
+                    ...prevState.pludo.images,
+                    gallery: prevState.pludo.images.gallery.filter(
+                        (image, idx) => image?.src
+                    ),
+                },
             },
         }));
     };
 
     const handleSubmit = async () => {
+        console.log({
+            data: {
+                title: formData.title,
+                slug: formData.slug,
+                pludo: {
+                    fields: formData.pludo.fields,
+                    tags: formData.pludo.tags,
+                    images: formData.pludo.images,
+                },
+            },
+        });
         try {
             const response = await fetch("/api/pludo/fauna/create-document", {
                 method: "POST",
@@ -258,9 +318,11 @@ export default function CreateDocument({ collection, folderList }) {
                     data: {
                         title: formData.title,
                         slug: formData.slug,
-                        fields: formData.pludo.fields,
-                        tags: formData.pludo.tags,
-                        images: formData.pludo.images,
+                        pludo: {
+                            fields: formData.pludo.fields,
+                            tags: formData.pludo.tags,
+                            images: formData.pludo.images,
+                        },
                     },
                 }),
             });
