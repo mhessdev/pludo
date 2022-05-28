@@ -80,7 +80,6 @@ export default function DocImages({
     onDelete = () => null,
     onMakeFeatured = () => null,
 }) {
-    console.log(images);
     const { modal } = useAppContext();
     const openMediaBrowser = () => {
         modal.setModalContent(

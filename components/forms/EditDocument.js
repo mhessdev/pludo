@@ -320,7 +320,6 @@ export default function EditDocument({
                 className="flex w-full flex-col gap-6 p-6"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    console.log(formData);
                 }}
             >
                 <TitleGroup

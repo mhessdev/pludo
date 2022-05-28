@@ -117,7 +117,7 @@ export default function MediaBrowser({
     };
 
     const getSubFolders = async (folder) => {
-        console.log(folder);
+        //console.log(folder);
         try {
             const response = await fetch("/api/pludo/spaces/list-folders", {
                 method: "POST",

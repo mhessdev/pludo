@@ -24,8 +24,6 @@ export default function CreateDocument({ collection, folderList }) {
             : BASE_FORM
     );
 
-    console.log(formData);
-
     const [history, setHistory] = useState([formData]);
 
     const loadHistory = (history) => {
@@ -35,7 +33,6 @@ export default function CreateDocument({ collection, folderList }) {
     useEffect(() => {
         setCookies("create-doc", formData);
         setHistory((prevState) => [...prevState, formData]);
-        console.log("IN EFFECT HOOK ", formData);
     }, [formData]);
 
     const handleClear = () => {
@@ -296,17 +293,6 @@ export default function CreateDocument({ collection, folderList }) {
     };
 
     const handleSubmit = async () => {
-        console.log({
-            data: {
-                title: formData.title,
-                slug: formData.slug,
-                pludo: {
-                    fields: formData.pludo.fields,
-                    tags: formData.pludo.tags,
-                    images: formData.pludo.images,
-                },
-            },
-        });
         try {
             const response = await fetch("/api/pludo/fauna/create-document", {
                 method: "POST",
@@ -354,7 +340,6 @@ export default function CreateDocument({ collection, folderList }) {
                 className="flex w-full flex-col gap-6 p-6"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    console.log(formData);
                 }}
             >
                 <TitleGroup
