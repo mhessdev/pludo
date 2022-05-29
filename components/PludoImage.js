@@ -1,4 +1,5 @@
 import Image from "next/image";
+import MyImage from "./MyImage";
 
 export default function PludoImage({
     path,
@@ -21,7 +22,16 @@ export default function PludoImage({
                 onClick={() => imageClick(row.imagePath, row.imageFile)}
             >
                 <div className="aspect-w-5 aspect-h-1 relative mb-2">
-                    <Image
+                    {/* <Image
+                        layout="fill"
+                        objectFit="contain"
+                        sizes="50vw"
+                        src={IMAGE_CDN + "images" + row.imagePath + ".webp"}
+                        quality={50}
+                        alt={row.imageFile}
+                        className="group-hover:opacity-75"
+                    /> */}
+                    <MyImage
                         layout="fill"
                         objectFit="contain"
                         sizes="50vw"

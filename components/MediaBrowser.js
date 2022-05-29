@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/outline";
 import { IMAGE_CDN } from "@/lib/constants";
 import { useAppContext } from "@/components/context/AppWrapper";
+import MyImage from "@/components/MyImage";
 import NProgress from "nprogress";
 
 export default function MediaBrowser({
@@ -26,21 +27,23 @@ export default function MediaBrowser({
     const [curFolder, setCurFolder] = useState("Images/");
     const lazyRoot = useRef();
 
-    const myLoader = ({ src, width, quality }) => {
-        return `${IMAGE_CDN}${src}?w=${width}&q=${quality || 75}`;
-    };
-
     const imageClick = (path, imageName) => {
         modal.setModalContent(
             <>
                 <div className="aspect-w-16 aspect-h-9 relative mx-auto">
-                    <Image
+                    {/* <Image
                         // loader={myLoader}
                         src={IMAGE_CDN.split("Images")[0] + path}
                         alt={imageName}
                         layout="fill"
                         objectFit="contain"
                         sizes="100vw"
+                    /> */}
+                    <MyImage
+                        src={path}
+                        alt={imageName}
+                        layout="fill"
+                        objectFit="contain"
                     />
                 </div>
                 {path}
@@ -243,13 +246,20 @@ export default function MediaBrowser({
                                                         deleteImage(idx)
                                                     }
                                                 />
-                                                <Image
+                                                {/* <Image
                                                     // loader={myLoader}
                                                     src={image.src}
                                                     alt={image.name}
                                                     layout="fill"
                                                     className="group-hover:blur-sm"
                                                     objectFit="cover"
+                                                /> */}
+                                                <MyImage
+                                                    src={image.src}
+                                                    alt={image.name}
+                                                    layout="fill"
+                                                    objectFit="cover"
+                                                    className="group-hover:blur-sm"
                                                 />
                                             </div>
                                             <div className="mt-3">
@@ -342,7 +352,7 @@ export default function MediaBrowser({
                                     key={file}
                                     className="group group aspect-w-16 aspect-h-9 relative cursor-pointer"
                                 >
-                                    <Image
+                                    {/* <Image
                                         // loader={myLoader}
                                         lazyRoot={lazyRoot}
                                         src={
@@ -353,17 +363,20 @@ export default function MediaBrowser({
                                         objectFit="cover"
                                         sizes="50vw"
                                         className="group-hover:blur-sm"
+                                    /> */}
+                                    <MyImage
+                                        lazyRoot={lazyRoot}
+                                        src={file}
+                                        alt={file}
+                                        layout="fill"
+                                        objectFit="cover"
+                                        className="group-hover:blur-sm"
                                     />
                                     <div className="absolute hidden flex-row group-hover:flex">
                                         {expandImage && (
                                             <ArrowsExpandIcon
                                                 onClick={() =>
-                                                    imageClick(
-                                                        IMAGE_CDN.split(
-                                                            "Images"
-                                                        )[0] + file,
-                                                        file
-                                                    )
+                                                    imageClick(file, file)
                                                 }
                                                 className=" h-10 w-10 cursor-pointer text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                                             />

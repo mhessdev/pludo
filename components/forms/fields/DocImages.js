@@ -3,6 +3,7 @@ import { PlusCircleIcon } from "@heroicons/react/outline";
 import { useAppContext } from "@/components/context/AppWrapper";
 import MediaBrowser from "@/components/MediaBrowser";
 import { IMAGE_CDN } from "@/lib/constants";
+import MyImage from "@/components/MyImage";
 
 function FormImage({ src, alt }) {
     return (
@@ -13,8 +14,15 @@ function FormImage({ src, alt }) {
                 dark:bg-gray-800 dark:hover:bg-gray-700"
             imageSrc={src}
         >
-            <Image
+            {/* <Image
                 src={IMAGE_CDN + "/" + src}
+                alt={alt}
+                layout="fill"
+                sizes="50vw"
+                objectFit="contain"
+            /> */}
+            <MyImage
+                src={src}
                 alt={alt}
                 layout="fill"
                 sizes="50vw"

@@ -14,6 +14,7 @@ import FlyoutMenu from "@/components/FlyoutMenu";
 import MobileMenu from "@/components/MobileMenu";
 import Button from "@/components/Button";
 import Link from "next/link";
+import MyImage from "@/components/MyImage";
 
 export default function Header() {
     const { systemTheme, theme, setTheme } = useTheme();
@@ -88,7 +89,13 @@ export default function Header() {
                                     >
                                         {session.user.image ? (
                                             <span className="relative h-8 w-8">
-                                                <Image
+                                                {/* <Image
+                                                    src={session.user.image}
+                                                    alt={session.user.name}
+                                                    layout="fill"
+                                                    className="rounded-full"
+                                                /> */}
+                                                <MyImage
                                                     src={session.user.image}
                                                     alt={session.user.name}
                                                     layout="fill"

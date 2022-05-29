@@ -12,6 +12,7 @@ import { Switch, JsonInput } from "@mantine/core";
 import { PencilAltIcon } from "@heroicons/react/outline";
 import { useState, useEffect } from "react";
 import NProgress from "nprogress";
+import MyImage from "@/components/MyImage";
 
 export default function Table({
     tabs,
@@ -147,19 +148,24 @@ export default function Table({
     };
 
     const imageClick = (path, imageName) => {
-        let image = IMAGE_CDN + path;
         modal.setModalContent(
             <>
                 <div className="aspect-w-16 aspect-h-9  relative mx-auto">
-                    <Image
+                    {/* <Image
                         src={image}
                         alt={imageName}
                         layout="fill"
                         objectFit="contain"
                         sizes="50vw"
+                    /> */}
+                    <MyImage
+                        src={path}
+                        alt={imageName}
+                        layout="fill"
+                        objectFit="contain"
                     />
                 </div>
-                {image}
+                {IMAGE_CDN + "Images" + path.replace("Images", "")}
             </>
         );
 
@@ -348,7 +354,7 @@ export default function Table({
                                                     }
                                                 >
                                                     <div className="relative mb-2 h-12 w-28">
-                                                        <Image
+                                                        {/* <Image
                                                             layout="fill"
                                                             objectFit="contain"
                                                             sizes="50vw"
@@ -358,6 +364,16 @@ export default function Table({
                                                                     doc.gameFeatured)
                                                             }
                                                             quality={50}
+                                                            alt={doc.title}
+                                                            className="group-hover:opacity-75"
+                                                        /> */}
+                                                        <MyImage
+                                                            layout="fill"
+                                                            objectFit="contain"
+                                                            src={
+                                                                doc.pludoFeatured ??
+                                                                doc.gameFeatured
+                                                            }
                                                             alt={doc.title}
                                                             className="group-hover:opacity-75"
                                                         />
