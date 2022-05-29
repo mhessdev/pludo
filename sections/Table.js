@@ -53,7 +53,7 @@ export default function Table({
                 data.after.pop();
                 setNextDoc(data.after);
             } else {
-                setNextDoc([]);
+                setNextDoc("");
             }
 
             setDocs([...docs, ...data.data]);
@@ -429,7 +429,7 @@ export default function Table({
                         </tbody>
                     </table>
                 </div>
-                {after.length > 0 && (
+                {nextDoc.length > 0 && (
                     <div
                         onClick={() => loadMore()}
                         className="mt-10 w-full cursor-pointer rounded-xl bg-sky-500 p-6 text-center hover:drop-shadow-lg"
