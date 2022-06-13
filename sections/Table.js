@@ -286,9 +286,27 @@ export default function Table({
         toast.setToastShow(true);
         toast.setSide("left");
     };
+
+    const [editId, setEditId] = useState("");
     return (
         <>
             <section className="mt-6">
+                <div className="ml-auto block w-fit">
+                    <input
+                        type="text"
+                        placeholder="Edit Via ID"
+                        className="border-2 border-black"
+                        value={editId}
+                        onChange={(e) => setEditId(e.target.value)}
+                    />
+                    <button
+                        className="h-5 w-5 rounded bg-black text-white"
+                        onClick={() => editDocumentClick(editId)}
+                    >
+                        Go
+                    </button>
+                </div>
+
                 <div className="flex items-center justify-between">
                     <TableTabs tabs={tabs} />
                     {/* <Pagination /> */}
