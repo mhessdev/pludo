@@ -1,0 +1,925 @@
+
+
+CreateIndex({
+    name: "thecycle_Items_By_Type",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    terms: [
+        {
+            field: ["data", "gameData", "tags", "itemType"]
+        }
+    ]
+    values: [
+      {
+        field: ["data", "gameData", "tags", "itemType"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+
+CreateIndex({
+    name: "thecycle_Ai_By_Published",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Ai",
+    terms: [
+        {
+            field: ["data", "pludo", "published"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "pludo", "published"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Ai")
+  })
+
+  CreateIndex({
+    name: "thecycle_Ai_sort_by_slug_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Ai",
+    values: [
+      {
+        field: ["data", "slug"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Ai")
+  })
+
+CreateIndex({
+    name: "thecycle_Ai_sort_by_slug_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Ai",
+    values: [
+      {
+        field: ["data", "slug"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Ai")
+  })
+
+CreateIndex({
+    name: "thecycle_Ai_sort_by_health_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Ai",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "healthTable", "m_maxHealth"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Ai")
+  })
+
+CreateIndex({
+    name: "thecycle_Ai_sort_by_health_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Ai",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "healthTable", "m_maxHealth"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Ai")
+  })
+
+
+  
+CreateIndex({
+    name: "thecycle_Ai_sort_by_armor_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Ai",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "defaultArmor"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Ai")
+  })
+
+CreateIndex({
+    name: "thecycle_Ai_sort_by_armor_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Ai",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "defaultArmor"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Ai")
+  })
+
+
+CreateIndex({
+    name: "thecycle_Items_By_Published",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    terms: [
+        {
+            field: ["data", "pludo", "plublished"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "pludo", "plublished"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_slug_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "slug"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_slug_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "slug"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_itemWeight_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "itemWeight"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_itemWeight_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "itemWeight"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+  
+CreateIndex({
+    name: "thecycle_Items_sort_by_price_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "price"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_price_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "price"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+  CreateIndex({
+    name: "thecycle_Items_sort_by_mkSellValue_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "mkSellValue"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_mkSellValue_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "mkSellValue"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+ CreateIndex({
+    name: "thecycle_Items_sort_by_fpSellValue_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "fpSellValue"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_fpSellValue_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "fpSellValue"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+  CreateIndex({
+    name: "thecycle_Items_sort_by_rarity_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "tags", "rarity"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_Items_sort_by_rarity_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    values: [
+      {
+        field: ["data", "gameData", "tags", "rarity"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+
+CreateIndex({
+    name: "thecycle_Items_By_Category",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    terms: [
+        {
+            field: ["data", "gameData", "tags", "deviceCategory"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "gameData", "tags", "deviceCategory"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+CreateIndex({
+    name: "thecycle_Items_By_Tag",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    terms: [
+        {
+            field: ["data", "gameData", "tags", "itemTags"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "gameData", "tags", "itemTags"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+
+CreateIndex({
+    name: "thecycle_Items_By_Key",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Items",
+    terms: [
+        {
+            field: ["data", "gameData", "dataKeys", "key"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "gameData", "dataKeys", "key"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Items")
+  })
+
+
+
+
+
+  
+
+CreateIndex({
+    name: "thecycle_MapLocations_By_Map",
+    unique: false,
+    serialized: true,
+    source: "thecycle_MapLocations",
+    terms: [
+        {
+            field: ["data", "gameData", "mainData", "map"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "map"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_MapLocations")
+  })
+
+
+
+CreateIndex({
+    name: "thecycle_MapLocations_By_Published",
+    unique: false,
+    serialized: true,
+    source: "thecycle_MapLocations",
+    terms: [
+        {
+            field: ["data", "pludo", "published"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "pludo", "published"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_MapLocations")
+  })
+
+
+
+
+  CreateIndex({
+    name: "thecycle_MapNodes_By_Published",
+    unique: false,
+    serialized: true,
+    source: "thecycle_MapNodes",
+    terms: [
+        {
+            field: ["data", "pludo", "published"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "pludo", "published"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_MapNodes")
+  })
+
+  
+  CreateIndex({
+    name: "thecycle_MapNodes_By_Type",
+    unique: false,
+    serialized: true,
+    source: "thecycle_MapNodes",
+    terms: [
+        {
+            field: ["data", "gameData", "mainData", "type"]
+        }
+    ],
+    values: [
+      {
+        field:  ["data", "gameData", "mainData", "type"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_MapNodes")
+  })
+
+  CreateIndex({
+    name: "thecycle_MapNodes_By_Map",
+    unique: false,
+    serialized: true,
+    source: "thecycle_MapNodes",
+    terms: [
+        {
+            field: ["data", "gameData", "mainData", "map"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "gameData", "mainData", "map"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_MapNodes")
+  })
+
+
+
+
+CreateIndex({
+    name: "thecycle_News_By_Published",
+    unique: false,
+    serialized: true,
+    source: "thecycle_News",
+    terms: [
+        {
+            field: ["data", "pludo", "published"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "pludo", "published"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_News")
+  })
+
+  CreateIndex({
+    name: "thecycle_News_By_UpdatedAt",
+    unique: false,
+    serialized: true,
+    source: "thecycle_News",
+    terms: [
+        {
+            field: ["data", "updatedAt"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "updatedAt"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_News")
+  })
+
+
+    CreateIndex({
+    name: "thecycle_News_sort_by_updatedAt_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_News",
+    values: [
+      {
+        field: ["data",  "updatedAt"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_News")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_News_sort_by_updatedAt_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_News",
+    values: [
+      {
+        field: ["data", "updatedAt"], reverse: true
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_News")
+  })
+
+
+
+// LOOT TABLES 
+CreateIndex({
+    name: "thecycle_LootTables_By_Item_Keys",
+    unique: false,
+    serialized: true,
+    source: "thecycle_LootTables",
+    terms: [
+        {
+            field: ["data", "gameData", "items"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "slug"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_LootTables")
+  })
+
+  CreateIndex({
+    name: "thecycle_LootTables_By_Items",
+    unique: false,
+    serialized: true,
+    source: "thecycle_LootTables",
+    terms: [
+        {
+            field: ["data", "gameData", "items"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "gameData", "items"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_LootTables")
+  })
+
+
+CreateIndex({
+    name: "thecycle_LootTables_By_Published",
+    unique: false,
+    serialized: true,
+    source: "thecycle_LootTables",
+    terms: [
+        {
+            field: ["data", "pludo", "published"]
+        }
+    ],
+    values: [
+      {
+        field: ["data", "pludo", "published"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_LootTables")
+  })
+
+
+CreateIndex({
+    name: "thecycle_MapNodes_By_TierSlug",
+    unique: false,
+    serialized: true,
+    source: "thecycle_MapNodes",
+    terms: [
+        {
+            field: ["data", "gameData", "mainData", "tierSlug"]
+        }
+    ],
+    values: [
+      {
+        field:  ["data", "gameData", "mainData", "tierSlug"]
+      },
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_MapNodes")
+  })
+
+
+// CONTRACTS //////////////////////////////////////////////////////
+
+CreateIndex({
+    name: "thecycle_Contracts_By_Published",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+       terms: [
+        {
+            field:  ["data",  "pludo", "published"]
+        }
+    ],
+    values: [
+      {
+        field: ["ref"]
+      }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+  
+
+
+CreateIndex({
+    name: "thecycle_Contracts_sort_by_slug_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    values: [
+         {
+         field:  ["data",  "slug"]
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+  
+  
+
+CreateIndex({
+    name: "thecycle_Contracts_sort_by_slug_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    values: [
+         {
+         field: ["data", "slug"], reverse: true
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+
+
+CreateIndex({
+    name: "thecycle_Contracts_sort_by_fpOnCompletion_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    values: [
+         {
+         field:  ["data",  "gameData", "mainData", "fpOnCompletion"]
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+CreateIndex({
+    name: "thecycle_Contracts_sort_by_fpOnCompletion_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    values: [
+         {
+         field:  ["data",  "gameData", "mainData", "fpOnCompletion"], reverse: true
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+
+
+CreateIndex({
+    name: "thecycle_Contracts_sort_by_faction_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    values: [
+         {
+         field:  ["data",  "gameData", "mainData", "faction"]
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+CreateIndex({
+    name: "thecycle_Contracts_sort_by_faction_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    values: [
+         {
+         field:  ["data",  "gameData", "mainData", "faction"], reverse: true
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+
+
+// FACTION
+CreateIndex({
+    name: "thecycle_Contracts_By_Faction_sort_by_slug_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    terms: [
+        {
+            field: ["data", "gameData", "mainData", "faction"]
+        }
+    ],
+    values: [
+         {
+         field:  ["data",  "slug"]
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_Contracts_By_Faction_sort_by_slug_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+    terms: [
+        {
+            field: ["data", "gameData", "mainData", "faction"]
+        }
+    ],
+    values: [
+         {
+         field:  ["data",  "slug"] reverse: true
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+  
+
+CreateIndex({
+    name: "thecycle_Contracts_By_Faction_sort_by_faction_points_asc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+     terms: [
+        {
+            field: ["data", "gameData", "mainData", "faction"]
+        }
+    ],
+    values: [
+         {
+         field:  ["data",  "gameData", "mainData", "fpOnCompletion"]
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+
+CreateIndex({
+    name: "thecycle_Contracts_By_Faction_sort_by_faction_points_desc",
+    unique: false,
+    serialized: true,
+    source: "thecycle_Contracts",
+      terms: [
+        {
+            field: ["data", "gameData", "mainData", "faction"]
+        }
+    ],
+    values: [
+         {
+         field:  ["data",  "gameData", "mainData", "fpOnCompletion"], reverse: true
+        },
+         {
+            field: ["ref"]
+         }
+    ],
+    source: Collection("thecycle_Contracts")
+  })
+

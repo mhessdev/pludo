@@ -1,0 +1,1032 @@
+// getItemsPage
+Query(
+  Lambda(
+    ["index", "termVal"],
+    Map(
+        Paginate(
+            If(IsIndex(Index(Var("index"))),
+            Join(
+                Match(Index(Var("index"), Var("termVal"))),
+                Match(Index("thecycle_Items_By_Published"), true)
+            ),
+            Match(Index("thecycle_Items_By_Published"), true),
+            ),
+        { size: 1000 }),
+       
+    )
+  )
+)
+
+// update from formater
+Query(
+  Lambda(
+    ["collection", "documents"],
+    Map(
+      Var("documents"),
+      Lambda(
+        "document",
+        Let(
+          {
+            docRef: Match(
+              Index(Concat([Var("collection"), "_By_Slug"])),
+              Select("slug", Var("document"))
+            ),
+          },
+          If(
+            IsEmpty(Var("docRef")),
+            Create(Var("collection"), {
+              data: Merge(Var("document"), {
+                pludo: {
+                  fields: [{ name: "content", value: "", type: "richtext" }],
+                  tags: [],
+                  images: { featured: {}, gallery: [] },
+                  published: true
+                },
+                createdAt: ToString(Now()),
+                updatedAt: ToString(Now())
+              })
+            }),
+            Update(
+                Select("ref", Get(Var("docRef"))),
+                Merge(Get(Var("docRef")), {
+                    data: Merge(Var("document"), { updatedAt: ToString(Now()) })
+                })
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+
+// getItemTypes ||| OLD
+Query(
+  Lambda(
+    "x",
+    Distinct(
+      Map(
+        Paginate(Match(Index("thecycle_Items_Published"), true), {
+          size: 1000
+        }),
+        Lambda(
+          ["value", "ref"],
+          ReplaceStr(
+            ReplaceStr(
+              Select(["data", "gameData", "tags", "itemType"], Get(Var("ref"))),
+              "Abilities",
+              "Consumables"
+            ),
+            "ST_",
+            ""
+          )
+        )
+      )
+    )
+  )
+)
+
+//getItemTypes ||| NEW
+Query(
+    Lambda(
+        "noVar",
+        Distinct(
+            Map(
+                Call("getItemTags"),
+                Lambda(
+                    "tag",
+                    Let(
+                        {
+                            type:  
+                                If(ContainsStr(Var("tag"), "."),
+                                    Select("data", Select(0, FindStrRegex(Var("tag"), "^[^\.]+"))),
+                                    Var("tag")
+                                ),
+                        },    
+                        {
+                            type: Var("type"),
+                            tags: Filter(
+                                Call("getItemTags"),
+                                Lambda(
+                                    "tag2",
+                                    ContainsStr(Var("tag2"), Var("type")),
+                                )
+                            )
+                        },
+                    ),
+                )
+            )
+        )
+    )
+)
+
+
+// getPublishedItemsPage
+// sort by sort function
+// always published
+// searched by search function
+//getDocRefsBySortSearchAndPublished
+Query(
+    Lambda(
+        ["searchIndex", "searchTerm", "sortIndex", "publishedIndex", "formatFunction"],
+        Map(
+            Intersection(
+                If(IsIndex(Index(Var("sortIndex"))),
+                    Call("getRefsArrayFromIndexNoTerm", Var("sortIndex")),
+                    Call("getRefsArrayFromIndexWithTerm", [Var("publishedIndex"), true])
+                ),
+                Map(
+                    Intersection(
+                        If(IsIndex(Index(Var("searchIndex"))),
+                            Call("getRefsArrayFromIndexWithTerm", [Var("searchIndex"), Var("searchTerm")]),
+                            Call("getRefsArrayFromIndexWithTerm", [Var("publishedIndex"), true])
+                        ),
+                        Call("getRefsArrayFromIndexWithTerm", [Var("publishedIndex"), true])
+                    ),
+                    Lambda("ref", Var("ref"))
+                ),
+            ),
+            Lambda("ref", 
+                Call(Var("formatFunction"), Var("ref"))
+            )
+        ),
+    )
+)
+
+
+//getItemsByTags
+Query(
+    Lambda(
+        ["tags", "sortIndex", "noFormat"],
+        Map(
+            Distinct(
+                Intersection(
+                    If(IsIndex(Index(Var("sortIndex"))),
+                            Call("getRefsArrayFromIndexNoTerm", Var("sortIndex")),
+                            Call("getRefsArrayFromIndexWithTerm", ["thecycle_Items_By_Published", true])
+                        ),
+                    Distinct(
+                        Reduce(
+                            Lambda(
+                                ["items", "tag"],
+                                Append(
+                                    Var("items"),
+                                    Intersection(
+                                        Call("getRefsArrayFromIndexWithTerm", ["thecycle_Items_By_Tag", Var("tag")]),
+                                        Call("getRefsArrayFromIndexWithTerm", ["thecycle_Items_By_Published", true])
+                                    )
+                                )
+                            ),
+                            [],
+                            Var("tags")
+                        )
+                    )
+                )
+            ),
+             Lambda("ref", 
+                If(Equals(Var("noFormat"), true),
+                    Var("ref"),
+                    Call("formatItemDocForTablePage", Var("ref"))
+                    )
+            )
+        )
+    )
+)
+
+// get published docs as ref array - exameple
+Call("getRefsArrayFromIndexWithTerm", ["thecycle_Items_By_Published", true])
+
+// get refs array from index no term
+Query(
+    Lambda(
+        "index",
+         Select("data", Map(
+            Paginate(Match(Index(Var("index"))), {size: 100000}),
+            Lambda(
+                ["slug", "ref"],
+                Var("ref"),
+            )
+        )),
+    )
+)
+
+// get refs array from index with term
+Query(
+  Lambda(
+    ["index", "termVal"],
+    Select(
+      "data",
+      Map(
+        Paginate(Match(Index(Var("index")), Var("termVal")), { size: 100000 }),
+        Lambda(["term", "ref"], Var("ref"))
+      )
+    )
+  )
+)
+
+
+// formatItemDocForTablePage
+Query(
+    Lambda( 
+        "ref",
+        Let(
+            {
+                doc: Get(Var("ref"))
+            },
+            {
+                id: Select(["ref", "id"], Var("doc")),
+                title: Select(["data", "title"], Var("doc"), null),
+                slug: Select(["data", "slug"], Var("doc"), null),
+                gameImage: Select(
+                    ["data", "gameData", "images", "featured", "src"],
+                    Var("doc"),
+                    null
+                ),
+                description: Select(
+                    ["data", "gameData", "mainData", "description"],
+                    Var("doc"),
+                    null
+                ),
+                weight: Select(
+                    ["data", "gameData", "mainData", "itemWeight"],
+                    Var("doc"),
+                    null
+                ),
+                price: Select(
+                    ["data", "gameData", "mainData", "price"],
+                    Var("doc"),
+                    null
+                ),
+                mkSellValue: Select(
+                    ["data", "gameData", "mainData", "mkSellValue"],
+                    Var("doc"),
+                    null
+                ),
+                fpSellValue: Select(
+                    ["data", "gameData", "mainData", "fpSellValue"],
+                    Var("doc"),
+                    null
+                ),
+                rarity: Select(
+                    ["data", "gameData", "tags", "rarity"],
+                    Var("doc"),
+                    null
+                )
+            }
+        ) 
+    )
+)
+
+
+//getItemTags
+Query(
+  Lambda(
+    "noVar",
+    Distinct(
+      Reduce(
+        Lambda(["x", "y"], Append(Var("x"), Var("y"))),
+        [],
+        Map(
+          Call("getRefsArrayFromIndexWithTerm", [
+            "thecycle_Items_By_Published",
+            true
+          ]),
+          Lambda(
+            "ref",
+            Select(
+              ["data", "gameData", "tags", "itemTags"],
+              Get(Var("ref")),
+              []
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+//getItemSubTyps
+Query(
+    Lambda(
+        ["type", "removeString"],
+        Map(
+            Filter(
+                Call("getItemTags"),
+                Lambda(
+                    "tag",
+                    Or(
+                        ContainsStr(Var("tag"), Var("type")),
+                        If(
+                            Equals(Var("type"), "Weapon"), 
+                            ContainsStr(Var("tag"), "Tools"), 
+                            false
+                        ),
+                        false,
+                    )
+                )
+            ),
+            Lambda(
+                "subType",
+                {
+                    slug: LowerCase(ReplaceStr(ReplaceStr(Var("subType"), Var("removeString"), ""), " ", "-")),
+                    tag: Var("subType")
+                },
+            )
+        )
+    )
+)
+
+
+Query(
+  Lambda(
+    "noVar",
+    Distinct(
+      Map(
+        Call("getItemTags", []),
+        Lambda(
+          "tag",
+          Let(
+            {
+              type: If(
+                ContainsStr(Var("tag"), "."),
+                Select("data", Select(0, FindStrRegex(Var("tag"), "^[^.]+"))),
+                Var("tag")
+              )
+            },
+            {
+              type: Var("type"),
+              subTypes: Map(
+                    Filter(
+                        Call("getItemTags", []),
+                        Lambda("tag2", ContainsStr(Var("tag2"), Var("type")))
+                    ),
+                Lambda("tag4", 
+                    Select("data", Select(0, FindStrRegex(Var("tag4"), "[^\.]+$")))
+                )
+              ),
+              tags: Filter(
+                Call("getItemTags", []),
+                Lambda("tag3", ContainsStr(Var("tag3"), Var("type")))
+              )
+            }
+          )
+        )
+      )
+    )
+  )
+)
+
+//getSlugsFromIndexByTerm
+Query(
+    Lambda(
+        ["index", "termValue"],
+        Map(
+            Call("getRefsArrayFromIndexWithTerm", [
+                    Var("index"),
+                    Var("termValue")]),
+            Lambda(
+                "ref",
+                Select(
+                    ["data", "slug"],
+                    Get(Var("ref")),
+                    null
+                )
+            )
+        )
+    )
+)
+
+//getSlugsFromIndexNoTerm
+Query(
+    Lambda(
+        "index",
+        Map(
+            Call("getRefsArrayFromIndexNoTerm", [
+                    Var("index"),
+                   ]),
+            Lambda(
+                "ref",
+                Select(
+                    ["data", "slug"],
+                    Get(Var("ref")),
+                    null
+                )
+            )
+        )
+    )
+)
+
+//getDocBySlug
+Query(
+    Lambda(
+        [ "slugIndex", "slug"],
+        Get(Match(
+            Index(Var("slugIndex")),
+            Var("slug")
+        ))
+    )
+)
+
+
+
+
+//getContractChainsByFaction
+Query(
+    Lambda(
+        "faction",
+        Map(
+            Intersection(
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_ContractChains_By_Faction", Var("faction")]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_ContractChains_By_Published", true]),
+            ),
+            Lambda(
+               "ref",
+                Get(Var("ref"))
+            )
+        )
+    )
+)
+
+
+
+// getArmorValues
+Query(
+  Lambda(
+    "noVar",
+    Map(
+      Call("getItemsByTags", [
+        ["Equipment.Shield", "Equipment.Helmet"],
+        "",
+        true
+      ]),
+      Lambda(
+        "ref",
+        Let(
+          { doc: Get(Var("ref")) },
+          {
+            title: Select(["data", "title"], Var("doc"), null),
+            slug: Select(["data", "slug"], Var("doc"), null),
+            gameImage: Select(
+              ["data", "gameData", "images", "featured", "src"],
+              Var("doc"),
+              null
+            ),
+            armor: Select(
+              ["data", "gameData", "mainData", "armorAmount"],
+              Var("doc"),
+              null
+            )
+          }
+        )
+      )
+    )
+  )
+)
+
+
+//getAiForTable
+Query(
+    Lambda(
+        "sortIndex",
+        Map(
+            Intersection(
+                If(IsIndex(Index(Var("sortIndex"))),
+                    Call("getRefsArrayFromIndexNoTerm", Var("sortIndex")),
+                    Call("getRefsArrayFromIndexWithTerm", ["thecycle_Ai_By_Published", true]),
+                ),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Ai_By_Published", true]),
+            ),
+            Lambda(
+                "ref",
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        title: Select(["data", "title"], Var("doc"), null),
+                        slug: Select(["data", "slug"], Var("doc"), null),
+                        gameImage: Select(
+                            ["data", "gameData", "images", "featured", "src"],
+                            Var("doc"),
+                            null
+                        ),
+                        pludoImage: Select(
+                            ["data", "pludo", "images", "featured", "src"],
+                            Var("doc"),
+                            null
+                        ),
+                        mainData: Select(
+                            ["data", "gameData", "mainData"],
+                            Var("doc"),
+                            null
+                        ),
+                        lootTable: Select(
+                            ["data", "gameData", "lootTable"],
+                            Var("doc"),
+                            null
+                        ),
+                    }
+                )
+            )
+        )
+    )
+)
+
+
+//getMapLocations
+Query(
+    Lambda (
+        ["map", "formatFunction"],
+        Map(
+            Intersection(
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_MapLocations_By_Map", Var("map")]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_MapLocations_By_Published", true]),
+            ),
+            Lambda(
+                "ref",
+                If(
+                    IsFunction(Function(Var("formatFunction"))),
+                    Call(Var("formatFunction"), Var("ref")),
+                    Get(Var("ref"))
+                )
+            )
+        )
+    )
+)
+
+//formatMapNodes
+Query(
+  Lambda(
+    "ref",
+    Let(
+      { doc: Get(Var("ref")) },
+      {
+        id: Select("id", Var("ref")),
+        title: Select(["data", "title"], Var("doc"), null),
+        slug: Select(["data", "slug"], Var("doc"), null),
+        location: Select(["data", "gameData", "mainData", "location"], Var("doc"), null),
+        type: Select(["data", "gameData", "mainData", "type"], Var("doc"), null)
+      }
+    )
+  )
+)
+
+//getMapNodes
+Query(
+    Lambda (
+        ["map", "formatFunction", "types"],
+        Map(
+            If(IsNonEmpty(Var("types")),
+                Intersection(
+                    Call("getNodesByTypes", Var("types")),
+                    Intersection(
+                        Call("getRefsArrayFromIndexWithTerm", ["thecycle_MapNodes_By_Map", Var("map")]),
+                        Call("getRefsArrayFromIndexWithTerm", ["thecycle_MapNodes_By_Published", true]),
+                    ),
+                ),
+                Intersection(
+                    Call("getRefsArrayFromIndexWithTerm", ["thecycle_MapNodes_By_Map", Var("map")]),
+                    Call("getRefsArrayFromIndexWithTerm", ["thecycle_MapNodes_By_Published", true])
+                ),
+            ),
+            Lambda(
+                "ref",
+                If(
+                    IsFunction(Function(Var("formatFunction"))),
+                    Call(Var("formatFunction"), Var("ref")),
+                    Var("ref")
+                )
+            )
+        )
+    )
+)
+//// Call("getMapNodes", ["MAP01", "formatMapNodes", ["Loot Point"]])
+//Call("getMapNodes", ["MAP01", "formatMapNodes", ["Dumpster", "Loot Point"]])
+
+
+//getNodesByType
+Query(
+    Lambda (
+        "type",
+        Map(
+        Paginate(Match(Index("thecycle_MapNodes_By_Type"),  Var("type")), {size: 10000}),
+        Lambda(
+            ["value", "ref"],
+            Var("ref")
+        )
+        )
+    )
+)
+//Call("getNodesByType", "Loot Point")
+
+//getNodeTypes
+Query(
+    Lambda(
+        "noVar",
+        Distinct(
+            Map(
+                Paginate(Documents(Collection("thecycle_MapNodes")), {size: 10000}),
+                Lambda(
+                    "ref",
+                    Select(
+                        ["data", "gameData", "mainData", "type"],
+                        Get(Var("ref")),
+                        null
+                    )
+                )
+            )
+        )
+    )
+)
+
+//getNodesByTypes
+Query(
+    Lambda(
+        "types",
+            Distinct(
+                Reduce(
+                    Lambda(
+                        ["initial", "refsArray"],
+                        Append(Var("refsArray"), Var("initial"))
+                    ),
+                    [],
+                    Map(Var("types"),
+                    Lambda(
+                        "type",
+                        Select("data", Call("getNodesByType", Var("type"))),
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+//getItemByKey
+Query(
+  Lambda(
+    "key",
+    Map(
+      Paginate(Match(Index("thecycle_Items_By_Key"), Var("key")), {
+        size: 10000
+      }),
+      Lambda(["value", "ref"], Var("ref"))
+    )
+  )
+)
+
+
+//getItemsByKeys
+Query(
+  Lambda(
+    "keys",
+    Reduce(
+        Lambda(
+          ["initial", "refsArray"],
+          Append(Var("refsArray"), Var("initial"))
+        ),
+         [],
+         Map(
+            Var("keys"),
+        Lambda(
+            "key",
+            Select("data", Call("getItemByKey", Var("key")))
+        )
+        )
+    )
+    
+  )
+)
+
+//getCraftingItems
+Query(
+    Lambda(
+        "keys",
+        Map(
+            Call("getItemsByKeys", Var("keys")),
+            Lambda(
+                "ref",
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        id: Select("id", Var("ref")),
+                        title: Select(["data", "title"], Var("doc"), null),
+                        slug: Select(["data", "slug"], Var("doc"), null),
+                        type: Select(["data", "gameData", "mainData", "type"], Var("doc"), null),
+                        gameImage: Select(
+                            ["data", "gameData", "images", "featured", "src"],
+                            Var("doc"),
+                            null
+                        ),
+                        mainData: Select(
+                            ["data", "gameData", "mainData"],
+                            Var("doc"),
+                            null
+                        ),
+                    }
+                )
+            )
+        )
+    )
+)
+
+//getLootTableBySlug
+Query(
+    Lambda(
+        "slug",
+        Map(
+            Call("getRefsArrayFromIndexWithTerm", ["thecycle_LootTables_By_Slug", Var("slug")]),
+            Lambda(
+                "ref",
+                Let(
+                    { doc: Get(Ref(Collection("thecycle_LootTables"), Var("ref"))) },
+                    {
+                        id: Var("ref"),
+                        title: Select(["data", "title"], Var("doc"), null),
+                        slug: Select(["data", "slug"], Var("doc"), null),
+                        tierEntries: Select(["data", "gameDat", "tierEntries"], Var("doc"), null),
+                    }
+                )
+            )
+        )
+    )
+)
+
+
+
+Query(
+    Lambda(
+        ["sortIndex", "publishedIndex"],
+        Map(
+            Intersection(
+                Call("getRefsArrayFromIndexNoTerm", Var("sortIndex")),
+                Call("getRefsArrayFromIndexWithTerm", [Var("publishedIndex"), true])
+            ),
+            Lambda(
+                "ref",
+                Get(Var("ref"))
+            )
+        )
+    )
+)
+
+
+Query(
+  Lambda(
+    "keys",
+    Map(
+      Intersection(
+        Call("getRefsArrayFromIndexWithTerm", [
+          "thecycle_LootTables_By_Published",
+          true
+        ]),
+        Map(
+          Select(
+            "data",
+            Paginate(
+              Match(Index("thecycle_LootTables_By_Item_Keys"), Var("keys")),
+              { size: 10000 }
+            )
+          ),
+          Lambda(["slug", "ref"], Var("ref"))
+        )
+      ),
+      Lambda("ref", Get(Var("ref")))
+    )
+  )
+)
+
+Query(
+  Lambda(
+    "keys",
+    Map(
+      Intersection(
+        Call("getRefsArrayFromIndexWithTerm", [
+          "thecycle_LootTables_By_Published",
+          true
+        ]),
+        Map(
+          Select(
+            "data",
+            Paginate(Documents(Collection("thecycle_LootTables")), { size: 10000 }),
+          ),
+          Lambda("ref", Var("ref"))
+        )
+      ),
+      Lambda(
+        "ref",
+        Let(
+          { doc: Get(Var("ref")) },
+          {
+            id: Var("ref"),
+            title: Select(["data", "title"], Var("doc"), null),
+            slug: Select(["data", "slug"], Var("doc"), null),
+            items: Select(["data", "gameData", "items"], Var("doc"), null),
+            type: Select(["data", "gameData", "type"], Var("doc"), null),
+            pludoImage: Select(
+              ["data", "pludo", "images", "featured", "src"],
+              Var("doc"),
+              null
+            )
+          }
+        )
+      )
+    )
+  )
+)
+
+
+//getSearchDocs
+Query(
+    Lambda(
+        "noVar",
+        Map(
+            Union(
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Items_By_Published", true]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Ai_By_Published", true]),
+            ),
+            Lambda(
+                "ref",
+                Let (
+                    { doc: Get(Var("ref")) },
+                    {
+                        "title": Select(["data", "title"], Var("doc"), null),
+                        "slug": Select(["data", "slug"], Var("doc"), null),
+                        "type": Select(["data", "gameData", "mainData", "type"], Var("doc"), null),
+                        "description": Select(["data", "gameData", "mainData", "description"], Var("doc"), null),
+                        "content": Select(["data", "gameData", "mainData", "content"], Var("doc"), null),
+                        "gameImage": Select(
+                            ["data", "gameData", "images", "featured", "src"],
+                            Var("doc"),
+                            null
+                        ),
+                        "pludoImage": Select(
+                            ["data", "pludo", "images", "featured", "src"],
+                            Var("doc"),
+                            null
+                        ),
+                        "tags": Select(["data", "gameData", "tags", "itemTags"],  Var("doc"),
+                            null),
+                        "collection": Select(["ref", "collection"], Var("doc"), null),
+                        
+                    }
+                )
+            )
+        )
+    )
+)
+
+//getLootTablesTable
+Query(
+    Lambda(
+        "noVar",
+        Map(
+            Paginate(Documents(Collection("thecycle_LootTables")), {size: 10000}),
+            Lambda(
+                "ref",
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        "id": Var("ref"),
+                        "title": Select(["data", "title"], Var("doc"), null),
+                        "slug": Select(["data", "slug"], Var("doc"), null),
+                        "items": Select(["data", "gameData", "items"], Var("doc"), null),
+                    }
+                )
+            )
+        )
+    )
+)
+
+
+// getItemsWithRelationData
+Query(
+  Lambda(
+    "noVar",
+        Map(
+          Call("getRefsArrayFromIndexWithTerm", [
+            "thecycle_Items_By_Published",
+            true
+          ]),
+          Lambda(
+            "ref",
+            Let(
+                { doc: Get(Var("ref")) },
+                {
+                    id: Select(["ref", "id"], Var("doc"), null),
+                    title: Select(["data", "title"], Var("doc"), null),
+                    slug: Select(["data", "slug"], Var("doc"), null),
+                    type: Select(["data", "gameData", "mainData", "type"], Var("doc"), null),
+                    tags: Select(["data", "gameData", "tags", "itemTags"], Var("doc"), null),
+                    key: Select(["data", "gameData", "dataKeys", "key"], Var("doc"), null),
+                    gameImage: Select(
+                        ["data", "gameData", "images", "featured", "src"],
+                        Var("doc"),
+                        null
+                    ),
+                    pludoImage: Select(
+                        ["data", "pludo", "images", "featured", "src"],
+                        Var("doc"),
+                        null
+                    ),
+                }
+            )
+          )
+        )
+      )
+    )
+ 
+
+//getLootTableSlugsByItemKeys
+Query(
+  Lambda(
+    "keys",
+    Map(
+      Intersection(
+        Call("getRefsArrayFromIndexWithTerm", [
+          "thecycle_LootTables_By_Published",
+          true
+        ]),
+        Map(
+          Select(
+            "data",
+            Paginate(
+              Match(Index("thecycle_LootTables_By_Item_Keys"), Var("keys")),
+              { size: 10000 }
+            )
+          ),
+          Lambda(["slug", "ref"], Var("ref"))
+        )
+      ),
+      Lambda("ref", Select("slug", Select("data",Get(Var("ref")))))
+    )
+  )
+)
+
+
+//getContractsTableData
+Query(
+    Lambda(
+        ["sortIndex", "faction"]
+        Map(
+            Intersection(
+                If(Not(Equals(Var("faction", "")),
+                    Call("getRefsArrayFromIndexNoTerm", Var("sortIndex")),
+                    Call("getRefsArrayFromIndexWithTerm", [Var("sortIndex"), Var("faction")]),
+                )
+                 Select("data", Paginate(Match(Index("thecycle_Contracts_By_Published"), true), {size: 10000})),
+            ),
+            Lambda(
+                "ref",
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                         title: Select(["data", "title"], Var("doc"), null),
+                        slug: Select(["data", "slug"], Var("doc"), null),
+                        gameImage: Select(
+                            ["data", "gameData", "images", "featured", "src"],
+                            Var("doc"),
+                            null
+                        ),
+                        faction: Select(
+                            ["data", "gameData", "mainData", "faction"],
+                            Var("doc"),
+                            null
+                        ),
+                        fpOnCompletion: Select(
+                            ["data", "gameData", "mainData", "fpOnCompletion"],
+                            Var("doc"),
+                            null
+                        ),
+                        difficulty: Select(
+                            ["data", "gameData", "mainData", "contractDifficulty"],
+                            Var("doc"),
+                            null
+                        ),
+                        rewards: Select(
+                            ["data", "gameData", "mainData", "rewards"],
+                            Var("doc"),
+                            null
+                        ),
+                         objectives: Select(
+                            ["data", "gameData", "mainData", "objectives"],
+                            Var("doc"),
+                            null
+                        ),
+                         itemsToOwn: Select(
+                            ["data", "gameData", "mainData", "objectiveItemsToOwn"],
+                            Var("doc"),
+                            null
+                        ),
+                         key: Select(
+                            ["data", "gameData", "dataKeys", "key"],
+                            Var("doc"),
+                            null
+                        ),
+                    }
+                )
+            )
+        )
+    )
+    )
+)
+
+
