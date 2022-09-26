@@ -715,211 +715,89 @@ CreateIndex({
   })
 
 
-// CONTRACTS //////////////////////////////////////////////////////
 
 CreateIndex({
-    name: "thecycle_Contracts_By_Published",
+    name: "thecycle_Missions_By_Published",
     unique: false,
     serialized: true,
-    source: "thecycle_Contracts",
+    source: "thecycle_Missions",
        terms: [
         {
             field:  ["data",  "pludo", "published"]
         }
     ],
     values: [
+        {
+            field: ["data", "pludo", "published"]
+        },
       {
         field: ["ref"]
       }
     ],
-    source: Collection("thecycle_Contracts")
+    source: Collection("thecycle_Missions")
   })
   
 
-
 CreateIndex({
-    name: "thecycle_Contracts_sort_by_slug_asc",
+    name: "thecycle_Jobs_By_Published",
     unique: false,
     serialized: true,
-    source: "thecycle_Contracts",
-    values: [
-         {
-         field:  ["data",  "slug"]
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-  
-  
-
-CreateIndex({
-    name: "thecycle_Contracts_sort_by_slug_desc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-    values: [
-         {
-         field: ["data", "slug"], reverse: true
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-
-
-CreateIndex({
-    name: "thecycle_Contracts_sort_by_fpOnCompletion_asc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-    values: [
-         {
-         field:  ["data",  "gameData", "mainData", "fpOnCompletion"]
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-CreateIndex({
-    name: "thecycle_Contracts_sort_by_fpOnCompletion_desc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-    values: [
-         {
-         field:  ["data",  "gameData", "mainData", "fpOnCompletion"], reverse: true
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-
-
-CreateIndex({
-    name: "thecycle_Contracts_sort_by_faction_asc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-    values: [
-         {
-         field:  ["data",  "gameData", "mainData", "faction"]
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-CreateIndex({
-    name: "thecycle_Contracts_sort_by_faction_asc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-    values: [
-         {
-         field:  ["data",  "gameData", "mainData", "faction"], reverse: true
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-
-
-// FACTION
-CreateIndex({
-    name: "thecycle_Contracts_By_Faction_sort_by_slug_asc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-    terms: [
+    source: "thecycle_Jobs",
+       terms: [
         {
-            field: ["data", "gameData", "mainData", "faction"]
+            field:  ["data",  "pludo", "published"]
         }
     ],
     values: [
-         {
-         field:  ["data",  "slug"]
+        {
+            field: ["data", "pludo", "published"]
         },
-         {
-            field: ["ref"]
-         }
+      {
+        field: ["ref"]
+      }
     ],
-    source: Collection("thecycle_Contracts")
+    source: Collection("thecycle_Jobs")
   })
-  
+
 
 CreateIndex({
-    name: "thecycle_Contracts_By_Faction_sort_by_slug_desc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-    terms: [
-        {
-            field: ["data", "gameData", "mainData", "faction"]
-        }
-    ],
-    values: [
-         {
-         field:  ["data",  "slug"] reverse: true
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-  
+  name: "thecycle_Missions_By_Faction",
+  unique: false,
+  serialized: true,
+  source: "thecycle_Missions",
+  terms: [
+    {
+      field: ["data", "gameData", "tags", "faction"]
+    }
+  ],
+  values: [
+    {
+      field: ["data", "gameData", "tags", "faction"]
+    },
+    {
+      field: ["ref"]
+    }
+  ],
+  source: Collection("thecycle_Missions"),
+})
 
 CreateIndex({
-    name: "thecycle_Contracts_By_Faction_sort_by_faction_points_asc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-     terms: [
-        {
-            field: ["data", "gameData", "mainData", "faction"]
-        }
-    ],
-    values: [
-         {
-         field:  ["data",  "gameData", "mainData", "fpOnCompletion"]
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-
-CreateIndex({
-    name: "thecycle_Contracts_By_Faction_sort_by_faction_points_desc",
-    unique: false,
-    serialized: true,
-    source: "thecycle_Contracts",
-      terms: [
-        {
-            field: ["data", "gameData", "mainData", "faction"]
-        }
-    ],
-    values: [
-         {
-         field:  ["data",  "gameData", "mainData", "fpOnCompletion"], reverse: true
-        },
-         {
-            field: ["ref"]
-         }
-    ],
-    source: Collection("thecycle_Contracts")
-  })
-
+  name: "thecycle_Jobs_By_Faction",
+  unique: false,
+  serialized: true,
+  source: "thecycle_Jobs",
+  terms: [
+    {
+      field: ["data", "gameData", "tags", "faction"]
+    }
+  ],
+  values: [
+    {
+      field: ["data", "gameData", "tags", "faction"]
+    },
+    {
+      field: ["ref"]
+    }
+  ],
+  source: Collection("thecycle_Jobs"),
+})

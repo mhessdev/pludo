@@ -441,13 +441,72 @@ Query(
             ),
             Lambda(
                "ref",
-                Get(Var("ref"))
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        id: Select(["ref", "id"], Var("doc"), null),
+                        title: Select(["data", "title"], Var("doc"), null),
+                        slug: Select(["data", "slug"], Var("doc"), null),
+                        gameData: Select(["data", "gameData"], Var("doc"), null),
+                        pludo: Select(["data", "pludo"], Var("doc"), null)
+                    }
+                )
             )
         )
     )
 )
 
+//getJobsByFaction
+Query(
+    Lambda(
+        "faction",
+        Map(
+            Intersection(
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Jobs_By_Faction", Var("faction")]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Jobs_By_Published", true]),
+            ),
+            Lambda(
+               "ref",
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        id: Select(["ref", "id"], Var("doc"), null),
+                        title: Select(["data", "title"], Var("doc"), null),
+                        slug: Select(["data", "slug"], Var("doc"), null),
+                        gameData: Select(["data", "gameData"], Var("doc"), null),
+                        pludo: Select(["data", "pludo"], Var("doc"), null)
+                    }
+                )
+            )
+        )
+    )
+)
 
+//getMissionByFaction
+Query(
+    Lambda(
+        "faction",
+        Map(
+            Intersection(
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Jobs_By_Faction", Var("faction")]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Jobs_By_Published", true]),
+            ),
+            Lambda(
+               "ref",
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        id: Select(["ref", "id"], Var("doc"), null),
+                        title: Select(["data", "title"], Var("doc"), null),
+                        slug: Select(["data", "slug"], Var("doc"), null),
+                        gameData: Select(["data", "gameData"], Var("doc"), null),
+                        pludo: Select(["data", "pludo"], Var("doc"), null)
+                    }
+                )
+            )
+        )
+    )
+)
 
 // getArmorValues
 Query(
@@ -842,6 +901,9 @@ Query(
             Union(
                 Call("getRefsArrayFromIndexWithTerm", ["thecycle_Items_By_Published", true]),
                 Call("getRefsArrayFromIndexWithTerm", ["thecycle_Ai_By_Published", true]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_ContractChains_By_Published", true]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Missions_By_Published", true]),
+                Call("getRefsArrayFromIndexWithTerm", ["thecycle_Jobs_By_Published", true]),
             ),
             Lambda(
                 "ref",
@@ -865,7 +927,7 @@ Query(
                         ),
                         "tags": Select(["data", "gameData", "tags", "itemTags"],  Var("doc"),
                             null),
-                        "collection": Select(["ref", "collection"], Var("doc"), null),
+                        "collection": Select(["ref", "collection", "id"], Var("doc"), null),
                         
                     }
                 )
@@ -962,6 +1024,78 @@ Query(
 )
 
 
+
+//getAllContractChains
+Query(
+    Lambda(
+        "noVar",
+        Map(
+            Paginate(Match(Index("thecycle_ContractChains_By_Published"), true), {size: 10000}),
+            Lambda(
+                ["published", "ref"],
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        "id": Select(["ref", "id"], Var("doc"), null),
+                        "title": Select(["data", "title"], Var("doc"), null),
+                        "slug": Select(["data", "slug"], Var("doc"), null),
+                        "gameData": Select(["data", "gameData"], Var("doc"), null),
+                        "pludo": Select(["data", "pludo"], Var("doc"), null),
+                    }
+                )
+            )
+        )
+    )
+)
+
+//getAllJobs
+Query(
+    Lambda(
+        "noVar",
+        Map(
+            Paginate(Match(Index("thecycle_Jobs_By_Published"), true), {size: 10000}),
+            Lambda(
+                ["published", "ref"],
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        "id": Select(["ref", "id"], Var("doc"), null),
+                        "title": Select(["data", "title"], Var("doc"), null),
+                        "slug": Select(["data", "slug"], Var("doc"), null),
+                        "gameData": Select(["data", "gameData"], Var("doc"), null),
+                        "pludo": Select(["data", "pludo"], Var("doc"), null),
+                    }
+                )
+            )
+        )
+    )
+)
+
+//getAllMissions
+Query(
+    Lambda(
+        "noVar",
+        Map(
+            Paginate(Match(Index("thecycle_Missions_By_Published"), true), {size: 10000}),
+            Lambda(
+                ["published", "ref"],
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        "id": Select(["ref", "id"], Var("doc"), null),
+                        "title": Select(["data", "title"], Var("doc"), null),
+                        "slug": Select(["data", "slug"], Var("doc"), null),
+                        "gameData": Select(["data", "gameData"], Var("doc"), null),
+                        "pludo": Select(["data", "pludo"], Var("doc"), null),
+                    }
+                )
+            )
+        )
+    )
+)
+
+
+
 //getContractsTableData
 Query(
     Lambda(
@@ -1029,4 +1163,47 @@ Query(
     )
 )
 
+
+//getItemsBaseData
+Query(
+    Lambda(
+        "noVar",
+        Map(
+            Paginate(Match(Index("thecycle_Items_By_Published"), true), {size: 10000}),
+            Lambda(
+                ["published", "ref"],
+                Let(
+                    { doc: Get(Var("ref")) },
+                    {
+                        "id": Select(["ref", "id"], Var("doc"), null),
+                        "title": Select(["data", "title"], Var("doc"), null),
+                        "slug": Select(["data", "slug"], Var("doc"), null),
+                        "key": Select(["data", "gameData", "dataKeys", "key"], Var("doc"), null),
+                        "gameImage": Select(
+                            ["data", "gameData", "images", "featured", "src"],
+                            Var("doc"),
+                            null
+                        ),
+                    }
+                )
+            )
+        )
+    )
+)
+
+
+
+// getQuartersUpgrades
+Query(
+  Lambda(
+    "noVar",
+    Map(
+      Paginate(Documents(Collection("thecycle_Quarters")), {size: 10000}),
+      Lambda(
+        "ref",
+        Get(Var("ref"))
+      )
+    )
+  )  
+)
 
